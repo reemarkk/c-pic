@@ -6,8 +6,7 @@ Cross‑platform C demo that compiles a small program into **position‑independ
 - use raw Linux syscalls without libc,
 - extract a compact “shellcode‑like” code blob from a normal executable.
 
-> ⚠️ This project is for **low‑level systems / compiler education and research only**.  
-> Do **not** use it to break laws, violate school rules, workplace policies, or service terms.
+> ⚠️ This project is intended solely for educational and research purposes in low-level systems and compiler design. Do not use it to break laws, violate school or workplace policies, or service terms.
 
 [GitHub Project](https://github.com/mrzaxaryan/c-pic)
 
@@ -20,29 +19,23 @@ Cross‑platform C demo that compiles a small program into **position‑independ
   - [1. Set up the toolchain](#1-set-up-the-toolchain)
   - [2. Build all targets](#2-build-all-targets)
   - [3. Explore the artifacts](#3-explore-the-artifacts)
-- [Features](#features)
 - [Supported Targets](#supported-targets)
 - [How It Works](#how-it-works)
-  - [Windows Path](#windows-path)
-  - [Linux Path](#linux-path)
+  - [Windows](#windows)W
+  - [Linux](#linux)
 - [Project Layout](#project-layout)
-- [Strings & Data in PIC](#strings--data-in-pic)
 - [Research & Ethics](#research--ethics)
 - [Reference](#reference)
 
 ## Overview
 
-The sample program itself just prints `"Hello world!"` and exits cleanly,
-but the techniques are general and can be extended to more complex payloads.
+Position-independent code is essential for scenarios where code must execute correctly regardless of its memory location. This is especially relevant for shellcode, dynamic libraries, and certain security applications. The sample program in this repository is simple—it prints "Hello world!" and exits cleanly—but the techniques it demonstrates are broadly applicable to more complex payloads and use cases.
 
 At a high level, this project demonstrates how to:
 
-- obtain the Process Environment Block (PEB) manually on Windows;
-- walk the loader data structures to find the base address of `Kernel32.dll`;
-- parse PE export tables to resolve functions such as `WriteConsoleA`;
-- perform direct Linux syscalls (`write`, `exit`) without libc;
-- cross‑compile the same C source for multiple OS / architecture targets;
-- extract a compact, contiguous shellcode‑like blob from the resulting binary.
+- How to write position-independent code that has no dependencies on external libraries, headers, runtime environments, compiler routines, or other runtime overhead. For Windows and Linux platforms.
+- Fixes common pitfalls when writing position-independent code in C, especially regarding data access and string literals.
+- Provide simple scripts to build and extract position-independent code blobs for various architectures and platforms.
 
 Writing *truly* position‑independent code in plain C comes with a few constraints:
 
@@ -129,21 +122,7 @@ A few ideas for exploration:
 
 ---
 
-## Features
-
-- **No CRT / libc** – only minimal integer / pointer / string primitives.
-- **No Windows headers** – required NT / PE structures are re‑declared locally.
-- **Manual API resolution** – functions obtained via PEB + PE export parsing.
-- **Position‑independent output** – safe to copy the code blob to an arbitrary address (as long as you move the whole segment).
-- **Cross‑OS, cross‑arch** – Windows & Linux; x86, x86‑64, and ARM64.
-- **Single `.text` segment** – linker script keeps code & read‑only data together.
-- **Shellcode‑oriented artifacts** – build emits a raw byte blob plus basic metadata.
-
----
-
 ## Supported Targets
-
-The build scripts currently target:
 
 - **Windows‑style payloads** (code expects Windows user‑mode structures such as the PEB)
   - 32‑bit x86 (`windows_i386`, triple `i386-unknown-linux-gnu`)
@@ -158,51 +137,27 @@ The build scripts currently target:
 For the “Windows” variants, the OS‑level ABI is controlled entirely by the `PLATFORM_WINDOWS*` macros in the source, not by the target triple.
 The triple is just a convenient way to ask Clang for the right CPU and instruction set and to get an ELF container we can inspect.
 
-You can tweak or extend `build.bat` / `toolchain.bat` to add or remove targets as needed.
-
 ---
 
 ## How It Works
 
-### Windows Path
+### Windows
 
-On Windows builds (`PLATFORM_WINDOWS`):
+On Windows classic PEB walking techniques are used to locate `Kernel32.dll` and resolve the address of `WriteConsoleA` at runtime, avoiding any static imports.
 
-1. **Locate the PEB.**  
-   `GetCurrentPEB` in `peb.c` uses the appropriate register for each architecture
-   (`FS` / `GS` / `r9` / `x18`) to obtain a pointer to the current process’s PEB.
+- `peb.h` and `peb.h` define the necessary PEB and module structures for each architecture and accessing the PEB.
+- `pe.h` and `pe.c` implement PE header parsing and export directory walking to find function addresses by name.
+- `console.windows.c` implements `WriteConsole` by calling the resolved `WriteConsoleA` function pointer.
+- `environment.windows.c` implements `ExitProcess` by resolving and calling the `ExitProcess` API similarly.
 
-2. **Find Kernel32.**  
-   `GetModuleHandleFromPEB` walks the doubly‑linked list in `PEB_LDR_DATA->InMemoryOrderModuleList`
-   and looks for a module whose `BaseDllName` matches `"kernel32.dll"` (case‑insensitive).
+### Linux
 
-3. **Resolve exports.**  
-   `GetExportAddress` in `pe.c` parses the PE headers starting from the module base:
-   - validates the DOS header (`MZ`) and NT header (`PE\0\0`),
-   - locates the export directory in the data directory,
-   - walks the `AddressOfNames` / `AddressOfNameOrdinals` / `AddressOfFunctions` arrays,
-   - and returns the VA of a function whose name matches the requested string.
-
-4. **Call `WriteConsoleA`.**  
-   `console.windows.c` defines a `WriteConsole` wrapper that:
-   - pulls a PEB pointer with `GetCurrentPEB`,
-   - resolves `Kernel32.dll`,
-   - uses `GetExportAddress` to find `WriteConsoleA`,
-   - and finally calls it with the process’s standard output handle.
-
-5. **Exit cleanly.**  
-   On “Windows” builds, `ExitProcess(code)` is implemented as a macro that simply `return`s from `main`.
-   In a real process this function would normally be called through the real `ExitProcess` API;
-   here we care about the code blob itself, not the surrounding host process.
-
-### Linux Path
-
-On Linux builds (`PLATFORM_LINUX`):
+On Linux syscalls are used directly to perform console output and process exit, avoiding any libc dependencies.
 
 - `console.linux.c` implements `WriteConsole` using inline assembly to invoke the `write` syscall on `stdout`
   (`rax = 1` on x86‑64, appropriate registers on other architectures).
 - `environment.linux.c` implements `ExitProcess` with the correct `exit` syscall for each architecture.
-- `main.c` is shared between platforms: it just computes the string length, calls `WriteConsole`, then `ExitProcess`.
+- `main.c` is shared between platforms: it computes the string length, calls `WriteConsole`, then `ExitProcess`, and contains error checking for syscall results.
 
 Because the Linux path does not rely on any external libraries or global data, the resulting code is naturally position‑independent once the
 `.text`+`.rodata` segment has been relocated as a whole.
@@ -227,31 +182,6 @@ linker.script          # lld linker script: pack .text / .rodata into one segmen
 build.bat              # Top-level build script for all targets
 toolchain.bat          # Per-target build & extraction pipeline
 ```
-
----
-
-## Strings & Data in PIC
-
-Position‑independent **code** is usually straightforward; the tricky part is **data**:
-
-- Compilers like to place string literals and constants in `.rdata` / `.rodata`.
-- If you later extract only a single section (for shellcode‑like use),
-  any pointers into other sections become invalid.
-- On x86‑64, RIP‑relative addressing hides much of this:
-  as long as code and data live in the same contiguous region, relative references keep working.
-- On 32‑bit x86 Windows, compilers often emit **absolute addresses**, so a blob that gets relocated freely will break unless you:
-  - keep strings on the stack,
-  - or write a tiny loader that fixes up absolute pointers before jumping to the payload.
-
-This repository uses a pragmatic mix:
-
-- a custom `linker.script` keeps `.text` and `.rodata` together in one loadable segment;
-- the C code avoids surprising global data and keeps the example intentionally tiny;
-- comments in the source highlight architecture‑specific pitfalls where you’d need extra work
-  for more complex payloads (especially on 32‑bit x86).
-
-If you extend the project with additional global data or lots of string literals,
-keep these constraints in mind so the extracted blob stays truly position‑independent.
 
 ---
 
