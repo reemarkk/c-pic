@@ -50,13 +50,18 @@ Writing *truly* position‑independent code in plain C comes with a few constrai
 - you have to avoid hidden references to external libraries and CRT startup code;
 - you must be careful with string literals and constant data, which compilers like to scatter into separate sections.
 
-This repository takes a pragmatic approach:
+This project fixes that by: 
+- providing a custom linker script to keep code and read-only data together.
+- ensuring that all data is properly aligned for position-independent access.
 
-- all logic lives in a tiny set of `.c` / `.h` files with no CRT, no `<windows.h>`, and no libc;
-- a custom linker script keeps `.text` and `.rodata` together in one loadable segment;
-- a small build pipeline extracts just that segment into raw bytes, plus some helper metadata.
+However, putting read-only data in the same section will resolve most of the issues related to position-independent code, but in Windows i386 architecture, MSVC, GCC, and Clang compilers still emit absolute addresses for string literals and callback functions.
 
-Think of it as a minimal, readable “PIC lab” that you can disassemble, modify, and extend for your own experiments.
+This project fixes that by having no external library dependencies and no headers included so it could be possible to compile as an ELF Linux i386 architecture where string literals are accessed using relative addressing. 
+The core logic is in:
+- Always compile for ELF Linux platform even for Windows targets is specified. It is possible as project does not rely on any Windows-specific headers or libraries; only LLVM/Clang needed to produce position-independent code that written in C, a more high-level language than assembler.
+- **primitives.h** defines primitives for Linux and Windows platforms and fixes the issues like **WCHAR is an unsigned short type in Windows but an int type in Linux.**
+
+Moreover, it ensures that the output maintains its position-independent characteristics, allowing for more flexibility in deployment and execution.
 
 ---
 
