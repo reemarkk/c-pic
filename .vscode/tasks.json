@@ -5,159 +5,141 @@
             "label": "clean",
             "type": "shell",
             "command": "cmd",
-            "args": ["/c", "if exist bin rmdir /s /q bin"],
-            "options": { "cwd": "${workspaceFolder}" },
+            "args": [
+                "/c",
+                "if exist bin rmdir /s /q bin"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "problemMatcher": []
         },
+
+        // ===== Windows PE executables (was compiler.bat) =====
 
         {
             "label": "i386-pc-windows-msvc",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "compiler.bat",
-                "bin\\windows",
-                "i386-pc-windows-msvc",
-                "windows_i386",
-                "src\\*.c",
-                "-DARCHITECTURE_I386",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_I386",
-                "-Os"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target i386-pc-windows-msvc -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-builtin -Wl,/Entry:main,/SUBSYSTEM:CONSOLE -o bin/windows/windows_i386.exe src/*.c -DARCHITECTURE_I386 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_I386 -Os -DDEBUG"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "x86_64-pc-windows-msvc",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "compiler.bat",
-                "bin\\windows",
-                "x86_64-pc-windows-msvc",
-                "windows_amd64",
-                "src\\*.c",
-                "-DARCHITECTURE_AMD64",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_AMD64",
-                "-Os"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target x86_64-pc-windows-msvc -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-builtin -Wl,/Entry:main,/SUBSYSTEM:CONSOLE -o bin/windows/windows_amd64.exe src/*.c -DARCHITECTURE_AMD64 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_AMD64 -Os -DDEBUG"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "armv7a-pc-windows-msvc",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "compiler.bat",
-                "bin\\windows",
-                "armv7a-pc-windows-msvc",
-                "windows_arm32",
-                "src\\*.c",
-                "-DARCHITECTURE_ARM32",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_ARM32",
-                "-Os"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target armv7a-pc-windows-msvc -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-builtin -Wl,/Entry:main,/SUBSYSTEM:CONSOLE -o bin/windows/windows_arm32.exe src/*.c -DARCHITECTURE_ARM32 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_ARM32 -Os"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "aarch64-pc-windows-msvc",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "compiler.bat",
-                "bin\\windows",
-                "aarch64-pc-windows-msvc",
-                "windows_arm64",
-                "src\\*.c",
-                "-DARCHITECTURE_ARM64",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_ARM64",
-                "-Os"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target aarch64-pc-windows-msvc -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-builtin -Wl,/Entry:main,/SUBSYSTEM:CONSOLE -o bin/windows/windows_arm64.exe src/*.c -DARCHITECTURE_ARM64 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_ARM64 -Os"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
+
+        // ===== Position‑independent ELF + .bin + .txt (was pic-compiler.bat) =====
+        // These build the ELF, then extract .text to a .bin and a disasm .txt.
 
         {
             "label": "i386-unknown-linux-gnu-win",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "pic-compiler.bat",
-                "bin\\windows",
-                "i386-unknown-linux-gnu",
-                "windows_i386",
-                "src\\*.c",
-                "-DARCHITECTURE_I386",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_I386",
-                "-Os",
-                "-fshort-wchar"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target i386-unknown-linux-gnu -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -Wl,--gc-sections -fno-builtin -Wl,-T,linker.script,-e,main -o bin/windows/windows_i386.elf src/*.c -DARCHITECTURE_I386 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_I386 -Os -fshort-wchar && llvm-objcopy --dump-section=.text=bin/windows/windows_i386.bin bin/windows/windows_i386.elf && llvm-objdump -d -s -j .text bin/windows/windows_i386.elf > bin/windows/windows_i386.txt"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "x86_64-unknown-linux-gnu-win",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "pic-compiler.bat",
-                "bin\\windows",
-                "x86_64-unknown-linux-gnu",
-                "windows_amd64",
-                "src\\*.c",
-                "-DARCHITECTURE_AMD64",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_AMD64",
-                "-Os",
-                "-fshort-wchar"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target x86_64-unknown-linux-gnu -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -Wl,--gc-sections -fno-builtin -Wl,-T,linker.script,-e,main -o bin/windows/windows_amd64.elf src/*.c -DARCHITECTURE_AMD64 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_AMD64 -Os -fshort-wchar && llvm-objcopy --dump-section=.text=bin/windows/windows_amd64.bin bin/windows/windows_amd64.elf && llvm-objdump -d -s -j .text bin/windows/windows_amd64.elf > bin/windows/windows_amd64.txt"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "thumbv7a-none-linux-gnueabi-win",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "pic-compiler.bat",
-                "bin\\windows",
-                "thumbv7a-none-linux-gnueabi",
-                "windows_arm32",
-                "src\\*.c",
-                "-DARCHITECTURE_ARM32",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_ARM32",
-                "-Os",
-                "-fshort-wchar"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target thumbv7a-none-linux-gnueabi -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -Wl,--gc-sections -fno-builtin -Wl,-T,linker.script,-e,main -o bin/windows/windows_arm32.elf src/*.c -DARCHITECTURE_ARM32 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_ARM32 -Os -fshort-wchar && llvm-objcopy --dump-section=.text=bin/windows/windows_arm32.bin bin/windows/windows_arm32.elf && llvm-objdump -d -s -j .text bin/windows/windows_arm32.elf > bin/windows/windows_arm32.txt"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "aarch64-unknown-linux-gnu-win",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "pic-compiler.bat",
-                "bin\\windows",
-                "aarch64-unknown-linux-gnu",
-                "windows_arm64",
-                "src\\*.c",
-                "-DARCHITECTURE_ARM64",
-                "-DPLATFORM_WINDOWS",
-                "-DPLATFORM_WINDOWS_ARM64",
-                "-Os",
-                "-fshort-wchar"
+                "/c",
+                "if not exist bin/windows mkdir bin/windows && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target aarch64-unknown-linux-gnu -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -Wl,--gc-sections -fno-builtin -Wl,-T,linker.script,-e,main -o bin/windows/windows_arm64.elf src/*.c -DARCHITECTURE_ARM64 -DPLATFORM_WINDOWS -DPLATFORM_WINDOWS_ARM64 -Os -fshort-wchar && llvm-objcopy --dump-section=.text=bin/windows/windows_arm64.bin bin/windows/windows_arm64.elf && llvm-objdump -d -s -j .text bin/windows/windows_arm64.elf > bin/windows/windows_arm64.txt"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
 
         {
@@ -165,69 +147,60 @@
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "pic-compiler.bat",
-                "bin\\linux",
-                "i386-unknown-linux-gnu",
-                "linux_i386",
-                "src\\*.c",
-                "-DARCHITECTURE_I386",
-                "-DPLATFORM_LINUX",
-                "-DPLATFORM_LINUX_I386",
-                "-Os"
+                "/c",
+                "if not exist bin/linux mkdir bin/linux && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target i386-unknown-linux-gnu -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -Wl,--gc-sections -fno-builtin -Wl,-T,linker.script,-e,main -o bin/linux/linux_i386.elf src/*.c -DARCHITECTURE_I386 -DPLATFORM_LINUX -DPLATFORM_LINUX_I386 -Os && llvm-objcopy --dump-section=.text=bin/linux/linux_i386.bin bin/linux/linux_i386.elf && llvm-objdump -d -s -j .text bin/linux/linux_i386.elf > bin/linux/linux_i386.txt"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "x86_64-unknown-linux-gnu",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "pic-compiler.bat",
-                "bin\\linux",
-                "x86_64-unknown-linux-gnu",
-                "linux_amd64",
-                "src\\*.c",
-                "-DARCHITECTURE_AMD64",
-                "-DPLATFORM_LINUX",
-                "-DPLATFORM_LINUX_AMD64",
-                "-Os"
+                "/c",
+                "if not exist bin/linux mkdir bin/linux && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target x86_64-unknown-linux-gnu -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -Wl,--gc-sections -fno-builtin -Wl,-T,linker.script,-e,main -o bin/linux/linux_amd64.elf src/*.c -DARCHITECTURE_AMD64 -DPLATFORM_LINUX -DPLATFORM_LINUX_AMD64 -Os && llvm-objcopy --dump-section=.text=bin/linux/linux_amd64.bin bin/linux/linux_amd64.elf && llvm-objdump -d -s -j .text bin/linux/linux_amd64.elf > bin/linux/linux_amd64.txt"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "aarch64-unknown-linux-gnu",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "pic-compiler.bat",
-                "bin\\linux",
-                "aarch64-unknown-linux-gnu",
-                "linux_arm64",
-                "src\\*.c",
-                "-DARCHITECTURE_ARM64",
-                "-DPLATFORM_LINUX",
-                "-DPLATFORM_LINUX_ARM64",
-                "-Os"
+                "/c",
+                "if not exist bin/linux mkdir bin/linux && clang -Wall -Wextra -Werror -Qn -fuse-ld=lld -target aarch64-unknown-linux-gnu -nostdinc -nostartfiles -nodefaultlibs -nostdlib -fno-ident -mno-stack-arg-probe -fno-stack-check -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -Wl,--gc-sections -fno-builtin -Wl,-T,linker.script,-e,main -o bin/linux/linux_arm64.elf src/*.c -DARCHITECTURE_ARM64 -DPLATFORM_LINUX -DPLATFORM_LINUX_ARM64 -Os && llvm-objcopy --dump-section=.text=bin/linux/linux_arm64.bin bin/linux/linux_arm64.elf && llvm-objdump -d -s -j .text bin/linux/linux_arm64.elf > bin/linux/linux_arm64.txt"
             ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
+
+        // ===== Build All stays the same, now just depends on the new commands =====
 
         {
             "label": "Build All",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "clean",
-                "i386-pc-windows-msvc",
-                "x86_64-pc-windows-msvc",
-                "armv7a-pc-windows-msvc",
-                "aarch64-pc-windows-msvc",
+
                 "i386-unknown-linux-gnu-win",
                 "x86_64-unknown-linux-gnu-win",
                 "thumbv7a-none-linux-gnueabi-win",
                 "aarch64-unknown-linux-gnu-win",
+
                 "i386-unknown-linux-gnu",
                 "x86_64-unknown-linux-gnu",
                 "aarch64-unknown-linux-gnu"
