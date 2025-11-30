@@ -2,19 +2,25 @@
 
 #if defined(PLATFORM_WINDOWS)
 
-#define CONTAINING_RECORD(address, type, field) \
-    ((type *)((PCHAR)(address) - (USIZE)(&((type *)0)->field)))
 // Returns the current process's PEB pointer
 PPEB GetCurrentPEB() {
     PPEB peb;
 #if defined(PLATFORM_WINDOWS_AMD64)
+
     asm("movq %%gs:%1, %0" : "=r" (peb) : "m" (*(PUINT64)(0x60)));
+
 #elif defined(PLATFORM_WINDOWS_I386)
+
     asm("movl %%fs:%1, %0" : "=r" (peb) : "m" (*(PUINT32)(0x30)));
+
 #elif defined(PLATFORM_WINDOWS_ARM32)
-      asm("ldr %0, [r9, %1]" : "=r"(peb) : "i"(0x30));
+
+    asm("ldr %0, [r9, %1]" : "=r"(peb) : "i"(0x30));
+
 #elif defined(PLATFORM_WINDOWS_ARM64)
+
 	asm("ldr %0, [x18, #%1]" : "=r"(peb) : "i"(0x60));
+
 #else
 	#error Unsupported platform
 #endif

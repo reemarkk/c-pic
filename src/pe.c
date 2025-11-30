@@ -4,7 +4,6 @@
 
 #define IMAGE_DOS_SIGNATURE 0x5A4D      // MZ
 #define IMAGE_NT_SIGNATURE  0x00004550  // PE00
-// Image directory entry indices
 #define IMAGE_DIRECTORY_ENTRY_EXPORT          0   // Export Directory
 
 PVOID GetExportAddress(PVOID hModule, const PCHAR functionName)
@@ -56,6 +55,5 @@ PVOID GetExportAddress(PVOID hModule, const PCHAR functionName)
 
     return NULL; // Function was not found
 }
-
 
 #endif

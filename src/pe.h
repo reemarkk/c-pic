@@ -121,11 +121,15 @@ typedef struct _IMAGE_NT_HEADERS32 {
 
 // Define IMAGE_NT_HEADERS based on architecture
 #if defined(PLATFORM_WINDOWS_AMD64) || defined(PLATFORM_WINDOWS_ARM64)
+
     typedef IMAGE_NT_HEADERS64  IMAGE_NT_HEADERS;
     typedef PIMAGE_NT_HEADERS64 PIMAGE_NT_HEADERS;
+
 #else
+
     typedef IMAGE_NT_HEADERS32  IMAGE_NT_HEADERS;
     typedef PIMAGE_NT_HEADERS32 PIMAGE_NT_HEADERS;
+
 #endif
 
 // DOS header structure

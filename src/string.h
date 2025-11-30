@@ -3,6 +3,10 @@
 
 #include "primitives.h"
 
+
+#define towlower(c) (((c) >= L'A' && (c) <= L'Z') ? ((c) + (L'a' - L'A')) : (c))
+#define tolower(c) (((c) >= 'A' && (c) <= 'Z') ? ((c) + ('a' - 'A')) : (c))
+
 // Custom case-insensitive string comparison
 BOOL CompareStringIgnoreCase(const PCHAR s1, const PCHAR s2);
 

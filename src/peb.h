@@ -3,6 +3,9 @@
 
 #include "string.h"
 
+// Macro to get the containing record from a field pointer
+#define CONTAINING_RECORD(address, type, field) ((type *)((PCHAR)(address) - (USIZE)(&((type *)0)->field)))
+
 // Unicode string structure
 typedef struct _UNICODE_STRING {
     UINT16 Length;
