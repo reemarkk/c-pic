@@ -8,9 +8,6 @@
 
 PVOID GetExportAddress(PVOID hModule, const PCHAR functionName)
 {
-    if (!hModule || !functionName)
-        return NULL;
-
     // Validate DOS header
     PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)hModule;
     if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)

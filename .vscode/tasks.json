@@ -19,7 +19,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "prepare:linux",
       "type": "shell",
@@ -38,7 +37,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "i386-pc-windows-msvc",
       "dependsOn": "prepare:windows",
@@ -47,7 +45,7 @@
       "args": [
         "-Wall",
         "-Wextra",
-        "-Werror",
+        // "-Werror",
         "-Qn",
         "-fuse-ld=lld",
         "-nostdinc",
@@ -63,17 +61,15 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,/Entry:main,/SUBSYSTEM:CONSOLE",
-
         "-target",
         "i386-pc-windows-msvc",
         "-o",
         "bin/windows/windows_i386.exe",
-
         "-DARCHITECTURE_I386",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_I386",
         "-Os",
-        "src/*.c"        
+        "src/*.c"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -82,7 +78,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "x86_64-pc-windows-msvc",
       "dependsOn": "prepare:windows",
@@ -107,12 +102,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,/Entry:main,/SUBSYSTEM:CONSOLE",
-
         "-target",
         "x86_64-pc-windows-msvc",
         "-o",
         "bin/windows/windows_x86_64.exe",
-
         "-DARCHITECTURE_X86_64",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_X86_64",
@@ -126,7 +119,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "armv7a-pc-windows-msvc",
       "dependsOn": "prepare:windows",
@@ -151,12 +143,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,/Entry:main,/SUBSYSTEM:CONSOLE",
-
         "-target",
         "armv7a-pc-windows-msvc",
         "-o",
         "bin/windows/windows_arm7a.exe",
-
         "-DARCHITECTURE_ARM7A",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_ARM7A",
@@ -170,7 +160,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "aarch64-pc-windows-msvc",
       "dependsOn": "prepare:windows",
@@ -195,12 +184,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,/Entry:main,/SUBSYSTEM:CONSOLE",
-
         "-target",
         "aarch64-pc-windows-msvc",
         "-o",
         "bin/windows/windows_aarch64.exe",
-
         "-DARCHITECTURE_AARCH64",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_AARCH64",
@@ -214,7 +201,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "i386-unknown-linux-gnu-win",
       "type": "process",
@@ -222,7 +208,8 @@
       "args": [
         "-Wall",
         "-Wextra",
-        "-Werror",
+        // "-Werror",
+        // "-static",
         "-Qn",
         "-fuse-ld=lld",
         "-nostdinc",
@@ -237,20 +224,17 @@
         "-fno-asynchronous-unwind-tables",
         "-fno-unwind-tables",
         "-fno-builtin",
-        "-Wl,-T,linker.script,-e,main,--gc-sections",
-
+        "-Wl,-T,linker.script,-e,main,--gc-sections,--strip-all",
         "-target",
         "i386-unknown-linux-gnu",
         "-o",
         "bin/windows/windows_i386.elf",
-
         "-DARCHITECTURE_I386",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_I386",
         "-Os",
         "-fshort-wchar",
-        "src/*.c"          
-
+        "src/*.c"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -259,7 +243,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "x86_64-unknown-linux-gnu-win",
       "dependsOn": "prepare:windows",
@@ -284,19 +267,16 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,-T,linker.script,-e,main,--gc-sections",
-
-        "-target", 
-         "x86_64-unknown-linux-gnu",
+        "-target",
+        "x86_64-unknown-linux-gnu",
         "-o",
         "bin/windows/windows_x86_64.elf",
-
         "-DARCHITECTURE_X86_64",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_X86_64",
         "-Os",
         "-fshort-wchar",
         "src/*.c",
-        
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -305,7 +285,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "thumbv7a-none-linux-gnueabi-win",
       "dependsOn": "prepare:windows",
@@ -330,12 +309,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,-T,linker.script,-e,main,--gc-sections",
-
-        "-target", 
-         "thumbv7a-none-linux-gnueabi",
+        "-target",
+        "thumbv7a-none-linux-gnueabi",
         "-o",
         "bin/windows/windows_arm32.elf",
-
         "-DARCHITECTURE_ARM7A",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_ARM7A",
@@ -350,7 +327,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "aarch64-unknown-linux-gnu-win",
       "dependsOn": "prepare:windows",
@@ -375,12 +351,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,-T,linker.script,-e,main,--gc-sections",
-
-        "-target", 
-         "aarch64-unknown-linux-gnu",
+        "-target",
+        "aarch64-unknown-linux-gnu",
         "-o",
         "bin/windows/windows_aarch64.elf",
-
         "-DARCHITECTURE_AARCH64",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_AARCH64",
@@ -395,7 +369,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "i386-unknown-linux-gnu",
       "dependsOn": "prepare:linux",
@@ -420,12 +393,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,-T,linker.script,-e,main,--gc-sections",
-
-        "-target", 
+        "-target",
         "i386-unknown-linux-gnu",
         "-o",
         "bin/linux/linux_i386.elf",
-
         "-DARCHITECTURE_I386",
         "-DPLATFORM_LINUX",
         "-DPLATFORM_LINUX_I386",
@@ -439,7 +410,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "x86_64-unknown-linux-gnu",
       "dependsOn": "prepare:linux",
@@ -464,12 +434,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,-T,linker.script,-e,main,--gc-sections",
-
-        "-target", 
+        "-target",
         "x86_64-unknown-linux-gnu",
         "-o",
         "bin/linux/linux_x86_64.elf",
-
         "-DARCHITECTURE_X86_64",
         "-DPLATFORM_LINUX",
         "-DPLATFORM_LINUX_X86_64",
@@ -483,7 +451,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "aarch64-unknown-linux-gnu",
       "dependsOn": "prepare:linux",
@@ -508,12 +475,10 @@
         "-fno-unwind-tables",
         "-fno-builtin",
         "-Wl,-T,linker.script,-e,main,--gc-sections",
-
-        "-target", 
+        "-target",
         "aarch64-unknown-linux-gnu",
         "-o",
         "bin/linux/linux_aarch64.elf",
-
         "-DARCHITECTURE_AARCH64",
         "-DPLATFORM_LINUX",
         "-DPLATFORM_LINUX_AARCH64",
@@ -527,7 +492,6 @@
         "$gcc"
       ]
     },
-
     {
       "label": "extract:windows:i386",
       "dependsOn": "i386-unknown-linux-gnu-win",
@@ -542,7 +506,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "extract:windows:x86_64",
       "dependsOn": "x86_64-unknown-linux-gnu-win",
@@ -557,7 +520,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "extract:windows:arm32",
       "dependsOn": "thumbv7a-none-linux-gnueabi-win",
@@ -572,7 +534,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "extract:windows:aarch64",
       "dependsOn": "aarch64-unknown-linux-gnu-win",
@@ -587,7 +548,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "extract:linux:i386",
       "dependsOn": "i386-unknown-linux-gnu",
@@ -602,7 +562,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "extract:linux:x86_64",
       "dependsOn": "x86_64-unknown-linux-gnu",
@@ -617,7 +576,6 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "extract:linux:aarch64",
       "dependsOn": "aarch64-unknown-linux-gnu",
@@ -632,37 +590,117 @@
       },
       "problemMatcher": []
     },
-
+    {
+      "label": "dump:windows:i386",
+      "dependsOn": "extract:windows:i386",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "llvm-objdump",
+        "-d",
+        "-s",
+        "-j",
+        ".text",
+        "bin/windows/windows_i386.elf",
+        ">",
+        "bin/windows/windows_i386.txt"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "dump:windows:x86_64",
+      "dependsOn": "extract:windows:x86_64",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "llvm-objdump",
+        "-d",
+        "-s",
+        "-j",
+        ".text",
+        "bin/windows/windows_x86_64.elf",
+        ">",
+        "bin/windows/windows_x86_64.txt"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "dump:windows:arm32",
+      "dependsOn": "extract:windows:arm32",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "llvm-objdump",
+        "-d",
+        "-s",
+        "-j",
+        ".text",
+        "bin/windows/windows_arm32.elf",
+        ">",
+        "bin/windows/windows_arm32.txt"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "dump:windows:aarch64",
+      "dependsOn": "extract:windows:aarch64",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "llvm-objdump",
+        "-d",
+        "-s",
+        "-j",
+        ".text",
+        "bin/windows/windows_aarch64.elf",
+        ">",
+        "bin/windows/windows_aarch64.txt"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "dump:linux:i386",
+      "dependsOn": "extract:linux:i386",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "llvm-objdump",
+        "-d",
+        "-s",
+        "-j",
+        ".text",
+        "bin/linux/linux_i386.elf",
+        ">",
+        "bin/linux/linux_i386.txt"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
     {
       "label": "Build All",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "prepare:windows",
-        "prepare:linux",
-
-        // "i386-pc-windows-msvc",
-        // "x86_64-pc-windows-msvc",
-        // "armv7a-pc-windows-msvc",
-        // "aarch64-pc-windows-msvc",
-
-        // "i386-unknown-linux-gnu-win",
-        // "x86_64-unknown-linux-gnu-win",
-        // "thumbv7a-none-linux-gnueabi-win",
-        // "aarch64-unknown-linux-gnu-win",
-
-        // "i386-unknown-linux-gnu",
-        // "x86_64-unknown-linux-gnu",
-        // "aarch64-unknown-linux-gnu",
-
-        "extract:linux:i386",
-        "extract:linux:x86_64",
-        "extract:linux:aarch64",
-
-        "extract:windows:i386",
-        "extract:windows:x86_64",
-        "extract:windows:arm32",
-        "extract:windows:aarch64",
-
+        "dump:windows:i386",
+        "dump:windows:x86_64",
+        // "dump:windows:arm32",
+        "dump:windows:aarch64",
+        "dump:linux:i386",
+        "dump:linux:x86_64",
+        "dump:linux:aarch64",
       ],
       "group": {
         "kind": "build",

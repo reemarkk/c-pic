@@ -3,24 +3,25 @@
 
 #if defined(PLATFORM_WINDOWS)
 
-    #if defined(PLATFORM_WINDOWS_I386)
-        #define WINAPI  __attribute__((stdcall))
-    #elif defined(PLATFORM_WINDOWS_X86_64) 
-        #define WINAPI  __attribute__((ms_abi))
-    #elif defined(PLATFORM_WINDOWS_ARM7A)
-        #define WINAPI	
-    #elif defined(PLATFORM_WINDOWS_AARCH64)
-        #define WINAPI  
-    #endif
+#if defined(PLATFORM_WINDOWS_I386)
+#define WINAPI __attribute__((stdcall))
+#elif defined(PLATFORM_WINDOWS_X86_64)
+#define WINAPI __attribute__((ms_abi))
+#elif defined(PLATFORM_WINDOWS_ARM7A)
+#define WINAPI
+#elif defined(PLATFORM_WINDOWS_AARCH64)
+#define WINAPI
+#endif
 
 // Function pointer type for WriteConsoleA_t function
-typedef BOOL(WINAPI* WriteConsoleA)(PVOID hConsoleOutput, const PCHAR lpBuffer, UINT32 nNumberOfCharsToWrite, PUINT32 lpNumberOfCharsWritten, PUINT32 lpReserved);
+typedef BOOL(WINAPI *WriteConsoleA)(PVOID hConsoleOutput, const CHAR *lpBuffer, UINT32 nNumberOfCharsToWrite, PUINT32 lpNumberOfCharsWritten, PUINT32 lpReserved);
 
-UINT32 WriteConsole(const PCHAR output,  USIZE outputLength){
+UINT32 WriteConsole(const CHAR *output, USIZE outputLength)
+{
 	PPEB peb = GetCurrentPEB(); // Get the current process's PEB pointer
 
 	// Name of the module to resolve
-	PWCHAR moduleName =  L"Kernel32.dll";
+	PWCHAR moduleName = L"Kernel32.dll";
 	// Resolve the module handle
 	PVOID kernel32Base = GetModuleHandleFromPEB(peb, moduleName);
 	// Validate the module handle
@@ -29,11 +30,11 @@ UINT32 WriteConsole(const PCHAR output,  USIZE outputLength){
 	// Name of the function to resolve
 	PCHAR functionName = "WriteConsoleA";
 	// Resolve the function address
-	WriteConsoleA writeConsoleA= (WriteConsoleA)GetExportAddress(kernel32Base, functionName);
+	WriteConsoleA writeConsoleA = (WriteConsoleA)GetExportAddress(kernel32Base, functionName);
 	// Validate the function address
 	if (writeConsoleA == NULL)
 		return 0;
-		
+
 	UINT32 numberOfCharsWritten = 0;
 	// Call the WriteConsoleA function
 	writeConsoleA(peb->ProcessParameters->StandardOutput, output, outputLength, &numberOfCharsWritten, NULL);
