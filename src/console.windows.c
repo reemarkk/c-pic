@@ -21,19 +21,19 @@ UINT32 WriteConsole(const CHAR *output, USIZE outputLength)
 	PPEB peb = GetCurrentPEB(); // Get the current process's PEB pointer
 
 	// Name of the module to resolve
-	PWCHAR moduleName = L"Kernel32.dll";
+	PWCHAR moduleName = UTF16(L"Kernel32.dll");
 	// Resolve the module handle
 	PVOID kernel32Base = GetModuleHandleFromPEB(peb, moduleName);
 	// Validate the module handle
 	if (kernel32Base == NULL)
-		return 0;
+		return -1;
 	// Name of the function to resolve
-	PCHAR functionName = "WriteConsoleA";
+	PCHAR functionName = UTF8("WriteConsoleA");
 	// Resolve the function address
 	WriteConsoleA writeConsoleA = (WriteConsoleA)GetExportAddress(kernel32Base, functionName);
 	// Validate the function address
 	if (writeConsoleA == NULL)
-		return 0;
+		return -2;
 
 	UINT32 numberOfCharsWritten = 0;
 	// Call the WriteConsoleA function

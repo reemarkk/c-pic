@@ -8,7 +8,7 @@
 #define NO_RETURN __attribute__((noreturn))
 
 #if defined(PLATFORM_WINDOWS)
-#define ENTRYPOINT __attribute__((section(".text$main")))
+#define ENTRYPOINT
 #elif defined(PLATFORM_LINUX)
 #define ENTRYPOINT __attribute__((section(".text$main"))) __attribute__((noreturn))
 #endif
@@ -39,12 +39,15 @@ typedef double DOUBLE, *PDOUBLE;
 
 #if defined(PLATFORM_WINDOWS)
 typedef UINT16 WCHAR, *PWCHAR, **PPWCHAR;
-typedef INT32 BOOL, *PBOOL, **PPBOOL;
+typedef INT8 BOOL, *PBOOL, **PPBOOL;
 #elif defined(PLATFORM_LINUX)
+
+#if defined(ARCHITECTURE_AARCH64)
 typedef UINT32 WCHAR, *PWCHAR, **PPWCHAR;
-typedef UINT8 BOOL, *PBOOL, **PPBOOL;
 #else
-#error Unsupported platform
+typedef INT32 WCHAR, *PWCHAR, **PPWCHAR;
+#endif
+typedef UINT8 BOOL, *PBOOL, **PPBOOL;
 #endif
 
 #if defined(ARCHITECTURE_X86_64) || defined(ARCHITECTURE_AARCH64)

@@ -23,15 +23,15 @@
 
 #include "primitives.h"
 
-#define DIV_MOD_DECL(size) \
-UINT##size __udiv##size(UINT##size a, UINT##size b); \
-UINT##size __umod##size(UINT##size a, UINT##size b); \
-INT##size __sdiv##size(INT##size a, INT##size b); \
-INT##size __smod##size(INT##size a, INT##size b);
+#define DIV_MOD_DECL(size)                               \
+    UINT##size __udiv##size(UINT##size a, UINT##size b); \
+    UINT##size __umod##size(UINT##size a, UINT##size b); \
+    INT##size __sdiv##size(INT##size a, INT##size b);    \
+    INT##size __smod##size(INT##size a, INT##size b);
 
-DIV_MOD_DECL(8)
-DIV_MOD_DECL(16)
-DIV_MOD_DECL(32)
+// DIV_MOD_DECL(8)
+// DIV_MOD_DECL(16)
+// DIV_MOD_DECL(32)
 DIV_MOD_DECL(64)
 
 UINT64 __shl64(UINT64 a, UINT8 count);
@@ -43,20 +43,15 @@ UINT64 __byteswap64(UINT64 a);
 
 UINT64 __udivdi3(UINT64 a, UINT64 b);
 UINT64 __umoddi3(UINT64 a, UINT64 b);
-INT64  __divdi3 (INT64  a, INT64  b);
-INT64  __moddi3 (INT64  a, INT64  b);
-
-UINT64 _aulldiv(UINT64 a, UINT64 b);
-UINT64 _aullmod(UINT64 a, UINT64 b);
-INT64  _alldiv (INT64  a, INT64  b);
-INT64  _allmod (INT64  a, INT64  b);
+INT64 __divdi3(INT64 a, INT64 b);
+INT64 __moddi3(INT64 a, INT64 b);
 
 UINT64 __rt_udiv64(UINT64 a, UINT64 b);
 UINT64 __rt_umod64(UINT64 a, UINT64 b);
-INT64  __rt_sdiv64 (INT64  a, INT64  b);
-INT64  __rt_smod64 (INT64  a, INT64  b);
+INT64 __rt_sdiv64(INT64 a, INT64 b);
+INT64 __rt_smod64(INT64 a, INT64 b);
 
-UINT64 __aeabi_uldivmod(UINT64 a, UINT64 b, UINT64* rem);
-
+UINT64 __aeabi_uldivmod(UINT64 a, UINT64 b, UINT64 *rem);
+INT64 _allrem(INT64 a, INT64 b);
 
 #endif

@@ -3,15 +3,16 @@
 #if defined(PLATFORM_WINDOWS)
 
 // Returns the current process's PEB pointer
-PPEB GetCurrentPEB(VOID) {
+PPEB GetCurrentPEB(VOID)
+{
     PPEB peb;
 #if defined(PLATFORM_WINDOWS_X86_64)
 
-    __asm__("movq %%gs:%1, %0" : "=r" (peb) : "m" (*(PUINT64)(0x60)));
+    __asm__("movq %%gs:%1, %0" : "=r"(peb) : "m"(*(PUINT64)(0x60)));
 
 #elif defined(PLATFORM_WINDOWS_I386)
 
-    __asm__("movl %%fs:%1, %0" : "=r" (peb) : "m" (*(PUINT32)(0x30)));
+    __asm__("movl %%fs:%1, %0" : "=r"(peb) : "m"(*(PUINT32)(0x30)));
 
 #elif defined(PLATFORM_WINDOWS_ARM7A)
 
@@ -19,21 +20,21 @@ PPEB GetCurrentPEB(VOID) {
 
 #elif defined(PLATFORM_WINDOWS_AARCH64)
 
-	__asm__("ldr %0, [x18, #%1]" : "=r"(peb) : "i"(0x60));
+    __asm__("ldr %0, [x18, #%1]" : "=r"(peb) : "i"(0x60));
 
 #else
-	#error Unsupported platform
+#error Unsupported platform
 #endif
     return peb;
 }
 
 // Get the base address of a module by its name
-PVOID GetModuleHandleFromPEB(PPEB peb, const PWCHAR moduleName)
+PVOID GetModuleHandleFromPEB(PPEB peb, const WCHAR *moduleName)
 {
-    PLIST_ENTRY list  = &peb->LoaderData->InMemoryOrderModuleList;
+    PLIST_ENTRY list = &peb->LoaderData->InMemoryOrderModuleList;
     PLIST_ENTRY entry = list->Flink;
 
-    while (entry != list) 
+    while (entry != list)
     {
         PLDR_MODULE module = CONTAINING_RECORD(entry, LDR_MODULE, InMemoryOrderModuleList);
 

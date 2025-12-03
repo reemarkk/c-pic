@@ -9,6 +9,10 @@
     "files.associations": {
         "console.h": "c",
         "string.h": "c",
-        "environment.h": "c"
+        "environment.h": "c",
+        "peb.h": "c",
+        "pe.h": "c",
+        "math.h": "c",
+        "primitives.h": "c"
     },
 }

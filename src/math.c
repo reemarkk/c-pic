@@ -18,7 +18,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifdef BIG_ENDIAN
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #define LOW_PART 1
 #define HIGH_PART 0
 #else
@@ -30,96 +30,98 @@
 
 INT32 _fltused = 0;
 
-#define DIV_MOD_IMPL(size) \
-static UINT##size __udivmod##size(UINT##size a, UINT##size b, UINT##size* remainder) \
-{ \
-	UINT##size quotient = 0; \
-	UINT##size bit = 1; \
-\
-	if (b == 0) \
-		while(1){}; \
-\
-	while ((INT##size)b >= 0) \
-	{ \
-		b <<= 1; \
-		bit <<= 1; \
-	} \
-\
-	while (bit) \
-	{ \
-		if (b <= a) \
-		{ \
-			a -= b; \
-			quotient += bit; \
-		} \
-		b >>= 1; \
-		bit >>= 1; \
-	} \
-\
-	*remainder = a; \
-	return quotient; \
-} \
-\
-UINT##size __udiv##size(UINT##size a, UINT##size b) \
-{ \
-	UINT##size remainder; \
-	return __udivmod##size(a, b, &remainder); \
-} \
-\
-UINT##size __umod##size(UINT##size a, UINT##size b) \
-{ \
-	UINT##size remainder; \
-	__udivmod##size(a, b, &remainder); \
-	return remainder; \
-} \
-\
-INT##size __sdiv##size(INT##size a, INT##size b) \
-{ \
-	BOOL negative = FALSE; \
-	if (a < 0) \
-	{ \
-		a = -a; \
-		negative = TRUE; \
-	} \
-	if (b < 0) \
-	{ \
-		b = -b; \
-		negative = !negative; \
-	} \
-\
-	INT##size result = __udiv##size(a, b); \
-	if (negative) \
-		result = -result; \
-	return result; \
-} \
-\
-INT##size __smod##size(INT##size a, INT##size b) \
-{ \
-	BOOL negative = FALSE; \
-	if (a < 0) \
-	{ \
-		a = -a; \
-		negative = TRUE; \
-	} \
-	if (b < 0) \
-	{ \
-		b = -b; \
-	} \
-\
-	INT##size result = __umod##size(a, b); \
-	if (negative) \
-		result = -result; \
-	return result; \
-}
+#define DIV_MOD_IMPL(size)                                                               \
+	static UINT##size __udivmod##size(UINT##size a, UINT##size b, UINT##size *remainder) \
+	{                                                                                    \
+		UINT##size quotient = 0;                                                         \
+		UINT##size bit = 1;                                                              \
+                                                                                         \
+		if (b == 0)                                                                      \
+			while (1)                                                                    \
+			{                                                                            \
+			};                                                                           \
+                                                                                         \
+		while ((INT##size)b >= 0)                                                        \
+		{                                                                                \
+			b <<= 1;                                                                     \
+			bit <<= 1;                                                                   \
+		}                                                                                \
+                                                                                         \
+		while (bit)                                                                      \
+		{                                                                                \
+			if (b <= a)                                                                  \
+			{                                                                            \
+				a -= b;                                                                  \
+				quotient += bit;                                                         \
+			}                                                                            \
+			b >>= 1;                                                                     \
+			bit >>= 1;                                                                   \
+		}                                                                                \
+                                                                                         \
+		*remainder = a;                                                                  \
+		return quotient;                                                                 \
+	}                                                                                    \
+                                                                                         \
+	UINT##size __udiv##size(UINT##size a, UINT##size b)                                  \
+	{                                                                                    \
+		UINT##size remainder;                                                            \
+		return __udivmod##size(a, b, &remainder);                                        \
+	}                                                                                    \
+                                                                                         \
+	UINT##size __umod##size(UINT##size a, UINT##size b)                                  \
+	{                                                                                    \
+		UINT##size remainder;                                                            \
+		__udivmod##size(a, b, &remainder);                                               \
+		return remainder;                                                                \
+	}                                                                                    \
+                                                                                         \
+	INT##size __sdiv##size(INT##size a, INT##size b)                                     \
+	{                                                                                    \
+		BOOL negative = FALSE;                                                           \
+		if (a < 0)                                                                       \
+		{                                                                                \
+			a = -a;                                                                      \
+			negative = TRUE;                                                             \
+		}                                                                                \
+		if (b < 0)                                                                       \
+		{                                                                                \
+			b = -b;                                                                      \
+			negative = !negative;                                                        \
+		}                                                                                \
+                                                                                         \
+		INT##size result = __udiv##size(a, b);                                           \
+		if (negative)                                                                    \
+			result = -result;                                                            \
+		return result;                                                                   \
+	}                                                                                    \
+                                                                                         \
+	INT##size __smod##size(INT##size a, INT##size b)                                     \
+	{                                                                                    \
+		BOOL negative = FALSE;                                                           \
+		if (a < 0)                                                                       \
+		{                                                                                \
+			a = -a;                                                                      \
+			negative = TRUE;                                                             \
+		}                                                                                \
+		if (b < 0)                                                                       \
+		{                                                                                \
+			b = -b;                                                                      \
+		}                                                                                \
+                                                                                         \
+		INT##size result = __umod##size(a, b);                                           \
+		if (negative)                                                                    \
+			result = -result;                                                            \
+		return result;                                                                   \
+	}
 
-DIV_MOD_IMPL(8)
-DIV_MOD_IMPL(16)
-DIV_MOD_IMPL(32)
+// DIV_MOD_IMPL(8)
+// DIV_MOD_IMPL(16)
+// DIV_MOD_IMPL(32)
 DIV_MOD_IMPL(64)
 
 UINT64 __shl64(UINT64 a, UINT8 count)
 {
-	UINT32* parts = (UINT32*)&a;
+	UINT32 *parts = (UINT32 *)&a;
 	count &= 63;
 	if (count >= 32)
 	{
@@ -136,7 +138,7 @@ UINT64 __shl64(UINT64 a, UINT8 count)
 
 UINT64 __shr64(UINT64 a, UINT8 count)
 {
-	UINT32* parts = (UINT32*)&a;
+	UINT32 *parts = (UINT32 *)&a;
 	count &= 63;
 	if (count >= 32)
 	{
@@ -153,7 +155,7 @@ UINT64 __shr64(UINT64 a, UINT8 count)
 
 INT64 __sar64(INT64 a, UINT8 count)
 {
-	INT32* parts = (INT32*)&a;
+	INT32 *parts = (INT32 *)&a;
 	count &= 63;
 	if (count >= 32)
 	{
@@ -180,7 +182,7 @@ UINT32 __byteswap32(UINT32 a)
 
 UINT64 __byteswap64(UINT64 a)
 {
-	UINT32* parts = (UINT32*)&a;
+	UINT32 *parts = (UINT32 *)&a;
 	UINT32 s0 = __byteswap32(parts[1]);
 	UINT32 s1 = __byteswap32(parts[0]);
 	parts[0] = s0;
@@ -190,33 +192,30 @@ UINT64 __byteswap64(UINT64 a)
 
 UINT64 __udivdi3(UINT64 a, UINT64 b) { return __udiv64(a, b); }
 UINT64 __umoddi3(UINT64 a, UINT64 b) { return __umod64(a, b); }
-INT64  __divdi3 (INT64  a, INT64  b) { return __sdiv64(a, b); }
-INT64  __moddi3 (INT64  a, INT64  b) { return __smod64(a, b); }
-
-UINT64 _aulldiv(UINT64 a, UINT64 b) { return __udiv64(a, b); }
-UINT64 _aullmod(UINT64 a, UINT64 b) { return __umod64(a, b); }
-INT64  _alldiv (INT64  a, INT64  b) { return __sdiv64(a, b); }
-INT64  _allmod (INT64  a, INT64  b) { return __smod64(a, b); }
+INT64 __divdi3(INT64 a, INT64 b) { return __sdiv64(a, b); }
+INT64 __moddi3(INT64 a, INT64 b) { return __smod64(a, b); }
 
 UINT64 __rt_udiv64(UINT64 a, UINT64 b) { return __udiv64(a, b); }
-UINT64 __rt_umod64(UINT64 a, UINT64 b) { return __umod64(a, b); }
-INT64  __rt_sdiv64 (INT64  a, INT64  b) { return __sdiv64(a, b); }
-INT64  __rt_smod64 (INT64  a, INT64  b) { return __smod64(a, b); }
+// UINT64 __rt_umod64(UINT64 a, UINT64 b) { return __umod64(a, b); }
+// INT64 __rt_sdiv64(INT64 a, INT64 b) { return __sdiv64(a, b); }
+// INT64 __rt_smod64(INT64 a, INT64 b) { return __smod64(a, b); }
 
-INT64 __dtoi64(DOUBLE x){ return (INT64)x; }
-DOUBLE __i64tod(INT64 x){ return (DOUBLE)x; }
+INT64 __dtoi64(DOUBLE x) { return (INT64)x; }
+DOUBLE __i64tod(INT64 x) { return (DOUBLE)x; }
 
-UINT64 __aeabi_uldivmod(UINT64 a, UINT64 b, UINT64* rem)
-{
-    UINT64 quotient = __udiv64(a, b);
-    *rem = __umod64(a, b);
-    return quotient;
-}
+// UINT64 __aeabi_uldivmod(UINT64 a, UINT64 b, UINT64 *rem)
+// {
+// 	UINT64 quotient = __udiv64(a, b);
+// 	*rem = __umod64(a, b);
+// 	return quotient;
+// }
 
-INT64 __aeabi_d2lz(DOUBLE d){ return (INT64)d; }
-DOUBLE __aeabi_l2d(INT64 l){ return (DOUBLE)l; }
+// // INT64 __aeabi_d2lz(DOUBLE d) { return (INT64)d; }
+// // DOUBLE __aeabi_l2d(INT64 l) { return (DOUBLE)l; }
 
 DOUBLE __trunctfdf2(long double a)
 {
-    return (DOUBLE)a;   // narrowing conversion, truncating precision
+	return (DOUBLE)a;
 }
+
+INT64 _allrem(INT64 a, INT64 b) { return __smod64(a, b); }

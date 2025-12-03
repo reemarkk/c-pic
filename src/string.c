@@ -1,4 +1,5 @@
 #include "string.h"
+#include "environment.h"
 
 // Custom case-insensitive string comparison
 BOOL CompareStringIgnoreCase(const CHAR *s1, const CHAR *s2)
@@ -154,20 +155,6 @@ VOID doubleToStr(DOUBLE num, PCHAR str, PINT32 index, INT32 precision, INT32 wid
     DOUBLE frac_part = num - int_part;
 
     // Convert the integer part to string
-    // INT32 intDigits = 0; // Count the number of digits in the integer part
-    // INT64 tempInt = int_part; // Temporary variable to count digits in the integer part
-
-    // Calculate the number of digits in the integer part
-    // if (tempInt == 0) {
-    //     intDigits = 1;
-    // } else {
-    //     while (tempInt > 0) {
-    //         tempInt /= 10; // Remove the last digit
-    //         intDigits++; // Increment the digit count
-    //     }
-    // }
-
-    // Convert the integer part to string
     CHAR intStr[20]; // Temporary storage for integer part
     INT32 intIndex = 0;
 
@@ -203,15 +190,17 @@ VOID doubleToStr(DOUBLE num, PCHAR str, PINT32 index, INT32 precision, INT32 wid
     {
         str[(*index)++] = '.'; // Add the decimal point
         // Convert the fractional part and round
+        float f10 = *((float *)&(UINT32){0x41200000}); // 10.0f
         while (precision--)
         {
-            frac_part *= 10.0f;
+            frac_part *= f10;
             INT32 digit = (INT32)frac_part;        // Get the integer part of the fractional part
             str[(*index)++] = (CHAR)(digit + '0'); // Convert digit to character
             frac_part -= digit;                    // Remove the integer part of the fractional part
         }
         // Round the last digit
-        if (frac_part >= 0.5f)
+        float f0_5 = *((float *)&(UINT32){0x3F000000}); // 0.5f
+        if (frac_part >= f0_5)
         {
             // Increment the last digit
             INT32 last_index = *index - 1; // Get the index of the last digit added
@@ -376,9 +365,9 @@ VOID uintToStr(UINT64 num, PCHAR str, PINT32 index, INT32 width, INT32 zeroPad, 
 // Function to convert integer to hexadecimal string
 VOID intToHexStr(UINT64 num, PCHAR str, PINT32 index)
 {
-    PCHAR hex_digits = "0123456789abcdef"; // Hexadecimal digits for conversion
-    CHAR rev[20];                          // Temporary storage for reversed digits
-    INT32 len = 0;                         // Length of the number in digits
+    PCHAR hex_digits = UTF8("0123456789abcdef"); // Hexadecimal digits for conversion
+    CHAR rev[20];                                // Temporary storage for reversed digits
+    INT32 len = 0;                               // Length of the number in digits
 
     // Convert the number to a reversed hexadecimal string
     do
@@ -398,10 +387,10 @@ VOID intToHexStr(UINT64 num, PCHAR str, PINT32 index)
 VOID ptrToHex(PVOID ptr, PCHAR str, PINT32 index)
 {
 
-    UINT64 addr = (USIZE)ptr;              // Cast pointer to SIZE to get the address as an unsigned integer
-    PCHAR hex_digits = "0123456789abcdef"; // Hexadecimal digits for conversion
-    CHAR rev[20];                          // Temporary storage for reversed digits
-    INT32 len = 0;                         // Length of the number in digits
+    UINT64 addr = (USIZE)ptr;                    // Cast pointer to SIZE to get the address as an unsigned integer
+    PCHAR hex_digits = UTF8("0123456789abcdef"); // Hexadecimal digits for conversion
+    CHAR rev[20];                                // Temporary storage for reversed digits
+    INT32 len = 0;                               // Length of the number in digits
 
     str[(*index)++] = '0'; // Add '0' prefix for hexadecimal representation
     str[(*index)++] = 'x'; // Add 'x' to indicate hexadecimal format
@@ -423,10 +412,10 @@ VOID ptrToHex(PVOID ptr, PCHAR str, PINT32 index)
 // Helper function: formats an unsigned number in hexadecimal with a given field width
 VOID formatHex(UINT32 num, INT32 fieldWidth, INT32 uppercase, PCHAR s, INT32 *j, INT32 zeroPad, BOOL addPrefix)
 {
-    const CHAR *hexDigits = uppercase ? "0123456789ABCDEF"
-                                      : "0123456789abcdef"; // Hexadecimal digits for conversion
-    CHAR buffer[16];                                        // Temporary storage for hexadecimal digits
-    INT32 index = 0;                                        // Index for the buffer
+    const CHAR *hexDigits = uppercase ? UTF8("0123456789ABCDEF")
+                                      : UTF8("0123456789abcdef"); // Hexadecimal digits for conversion
+    CHAR buffer[16];                                              // Temporary storage for hexadecimal digits
+    INT32 index = 0;                                              // Index for the buffer
 
     // Special case: if number is zero, we want at least one digit.
     if (num == 0)
@@ -628,7 +617,7 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
                 // C standard does not allow NULL strings, so if the string is NULL, handle it by printing "(null)".
                 if (str == NULL)
                 {
-                    str = ((CHAR[]){'(', 'n', 'u', 'l', 'l', ')', '\0'}); // Handle null string case
+                    str = UTF8("(null)"); // Handle null string case
                 }
                 INT32 len = 0; // Length of the string to be printed
 
@@ -667,7 +656,7 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
                     // C standard does not allow NULL strings, so if the string is NULL, handle it by printing "(null)".
                     if (wstr == NULL)
                     {
-                        wstr = ((WCHAR[]){L'(', L'n', L'u', L'l', L'l', L')', L'\0'}); // Handle null wide string case
+                        wstr = UTF16(L"(null)"); // Handle null wide string case
                     }
                     wideToStr(wstr, s, &j, fieldWidth); // Convert the wide string to narrow string with specified formatting
                     continue;
@@ -688,7 +677,7 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
                     // C standard does not allow NULL strings, so if the string is NULL, handle it by printing "(null)".
                     if (wstr == NULL)
                     {
-                        wstr = ((WCHAR[]){L'(', L'n', L'u', L'l', L'l', L')', L'\0'}); // Handle null wide string case
+                        wstr = UTF16(L"(null)"); // Handle null wide string case
                     }
                     wideToStr(wstr, s, &j, fieldWidth); // Convert the wide string to narrow string with specified formatting
                     continue;

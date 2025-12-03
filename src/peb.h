@@ -9,20 +9,23 @@
 #define CONTAINING_RECORD(address, type, field) ((type *)((PCHAR)(address) - (USIZE)(&((type *)0)->field)))
 
 // Unicode string structure
-typedef struct _UNICODE_STRING {
+typedef struct _UNICODE_STRING
+{
     UINT16 Length;
     UINT16 MaximumLength;
     PWCHAR Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
 
 // List entry structure for linked lists
-typedef struct _LIST_ENTRY {
-    struct _LIST_ENTRY* Flink;
-    struct _LIST_ENTRY* Blink;
+typedef struct _LIST_ENTRY
+{
+    struct _LIST_ENTRY *Flink;
+    struct _LIST_ENTRY *Blink;
 } LIST_ENTRY, *PLIST_ENTRY;
 
 // Loader data table entry structure
-typedef struct _LDR_DATA_TABLE_ENTRY {
+typedef struct _LDR_DATA_TABLE_ENTRY
+{
     LIST_ENTRY InLoadOrderLinks;
     PVOID Reserved2[2];
     PVOID DllBase;
@@ -30,7 +33,8 @@ typedef struct _LDR_DATA_TABLE_ENTRY {
 } LDR_DATA_TABLE_ENTRY, *PLDR_DATA_TABLE_ENTRY;
 
 // Loader module structure
-typedef struct _LDR_MODULE {
+typedef struct _LDR_MODULE
+{
     LIST_ENTRY InLoadOrderModuleList;
     LIST_ENTRY InMemoryOrderModuleList;
     LIST_ENTRY InInitializationOrderModuleList;
@@ -47,7 +51,8 @@ typedef struct _LDR_MODULE {
 } LDR_MODULE, *PLDR_MODULE;
 
 // Process Environment Block Loader Data
-typedef struct _PEB_LDR_DATA {
+typedef struct _PEB_LDR_DATA
+{
     UINT32 Length;
     UINT32 Initialized;
     PVOID SsHandle;
@@ -57,7 +62,8 @@ typedef struct _PEB_LDR_DATA {
 } PEB_LDR_DATA, *PPEB_LDR_DATA;
 
 // Process parameters structure
-typedef struct _RTL_USER_PROCESS_PARAMETERS {
+typedef struct _RTL_USER_PROCESS_PARAMETERS
+{
     UINT32 MaximumLength;
     UINT32 Length;
     UINT32 Flags;
@@ -70,26 +76,24 @@ typedef struct _RTL_USER_PROCESS_PARAMETERS {
 } RTL_USER_PROCESS_PARAMETERS, *PRTL_USER_PROCESS_PARAMETERS;
 
 // Process Environment Block
-typedef struct _PEB {
-	UINT8											InheritedAddressSpace;
-	UINT8											ReadImageFileExecOptions;
-	UINT8											BeingDebugged;
-	UINT8											Spare;
-	PVOID											Mutant;
-	PVOID											ImageBase;
-	PPEB_LDR_DATA									LoaderData;
-	PRTL_USER_PROCESS_PARAMETERS					ProcessParameters;
-	PVOID											SubSystemData;
+typedef struct _PEB
+{
+    UINT8 InheritedAddressSpace;
+    UINT8 ReadImageFileExecOptions;
+    UINT8 BeingDebugged;
+    UINT8 Spare;
+    PVOID Mutant;
+    PVOID ImageBase;
+    PPEB_LDR_DATA LoaderData;
+    PRTL_USER_PROCESS_PARAMETERS ProcessParameters;
+    PVOID SubSystemData;
 } PEB, *PPEB;
 
 // Function to get the current process's PEB pointer
 PPEB GetCurrentPEB(VOID);
 // Function to resolve module handle by its name
-PVOID GetModuleHandleFromPEB(PPEB peb, const PWCHAR moduleName);
+PVOID GetModuleHandleFromPEB(PPEB peb, const WCHAR *moduleName);
 
 #endif // PLATFORM_WINDOWS
 
 #endif // __PEB_H__
-
-
-
