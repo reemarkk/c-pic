@@ -1,6 +1,6 @@
 #include "environment.h"
 
-#if defined(PLATFORM_WINDOWS_I386)
+#if defined(PLATFORM_PIC)
 
 PCHAR GetInstructionAddress(VOID)
 {

@@ -8,16 +8,7 @@
 #include "peb.h"
 #include "pe.h"
 
-// -----------------------------------------------------------------------------
-// ExitProcess
-// -----------------------------------------------------------------------------
-// This is just a placeholder macro for the Windows platform.
-// It is intended to be used ONLY in the entry point function.
-// In any other function, using ExitProcess(code) will just translate to `return code`.
-#define ExitProcess(code) return (code)
-
-#if defined(ARCHITECTURE_I386)
-
+#if defined(PLATFORM_PIC)
 // -----------------------------------------------------------------------------
 // Environment base management (used for PIC-style rebasing)
 // -----------------------------------------------------------------------------
@@ -41,19 +32,20 @@ PCHAR ReversePatternSearch(PCHAR rip, const CHAR *pattern, UINT32 len);
 
 PVOID RebaseLiteral(PVOID p);
 
-#else // !ARCHITECTURE_I386
-
-// Non-i386 Windows: no rebasing needed/used
+#else // !PIC
 #define UTF8(s) (s)
 #define UTF16(s) (s)
+#endif // PIC
 
-#endif // ARCHITECTURE_I386
+// -----------------------------------------------------------------------------
+// ExitProcess
+// -----------------------------------------------------------------------------
+// This is just a placeholder macro for the Windows platform.
+// It is intended to be used ONLY in the entry point function.
+// In any other function, using ExitProcess(code) will just translate to `return code`.
+#define ExitProcess(code) return (code)
 
 #elif defined(PLATFORM_LINUX)
-
-// Linux: no special rebasing, literals are used as-is
-#define UTF8(s) (s)
-#define UTF16(s) (s)
 
 NO_RETURN VOID ExitProcess(USIZE code);
 
