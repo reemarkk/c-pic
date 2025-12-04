@@ -47,7 +47,8 @@ PVOID RebaseLiteral(PVOID p);
 #define ExitProcess(code) return (code)
 
 #elif defined(PLATFORM_LINUX)
-
+#define UTF8(s) (s)
+#define UTF16(s) (s)
 NO_RETURN VOID ExitProcess(USIZE code);
 
 #endif // PLATFORM_* checks
