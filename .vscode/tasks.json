@@ -4,16 +4,25 @@
     {
       "label": "prepare:windows",
       "type": "shell",
-      "command": "cmd",
-      "args": [
-        "/c",
-        "if",
-        "not",
-        "exist",
-        "bin\\windows",
-        "mkdir",
-        "bin\\windows"
-      ],
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "if",
+          "not",
+          "exist",
+          "bin\\windows",
+          "mkdir",
+          "bin\\windows"
+        ],
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "mkdir -p bin/windows"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -22,7 +31,25 @@
     {
       "label": "prepare:linux",
       "type": "shell",
-      "command": "mkdir -p bin/linux",
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "if",
+          "not",
+          "exist",
+          "bin\\linux",
+          "mkdir",
+          "bin\\linux"
+        ]
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "mkdir -p bin/linux"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -31,8 +58,14 @@
     {
       "label": "i386-pc-windows-gnu",
       "dependsOn": "prepare:windows",
-      "type": "process",
-      "command": "clang",
+      "windows": {
+        "type": "process",
+        "command": "clang",
+      },
+      "linux": {
+        "type": "shell",
+        "command": "clang-20",
+      },
       "args": [
         "-Wall",
         "-Wextra",
@@ -74,8 +107,14 @@
     {
       "label": "x86_64-pc-windows-gnu",
       "dependsOn": "prepare:windows",
-      "type": "process",
-      "command": "clang",
+      "windows": {
+        "type": "process",
+        "command": "clang",
+      },
+      "linux": {
+        "type": "shell",
+        "command": "clang-20",
+      },
       "args": [
         "-Wall",
         "-Wextra",
@@ -117,8 +156,15 @@
     {
       "label": "armv7a-pc-windows-gnu",
       "dependsOn": "prepare:windows",
-      "type": "process",
       "command": "clang",
+      "windows": {
+        "type": "process",
+        "command": "clang",
+      },
+      "linux": {
+        "type": "shell",
+        "command": "clang-20",
+      },
       "args": [
         "-Wall",
         "-Wextra",
@@ -143,7 +189,7 @@
         "-target",
         "armv7a-pc-windows-gnu",
         "-o",
-        "bin/windows/windows_arm32.exe",
+        "bin/windows/windows_arm7a.exe",
         "-DARCHITECTURE_ARM7A",
         "-DPLATFORM_WINDOWS",
         "-DPLATFORM_WINDOWS_ARM7A",
@@ -160,8 +206,14 @@
     {
       "label": "aarch64-pc-windows-gnu",
       "dependsOn": "prepare:windows",
-      "type": "process",
-      "command": "clang",
+      "windows": {
+        "type": "process",
+        "command": "clang",
+      },
+      "linux": {
+        "type": "shell",
+        "command": "clang-20",
+      },
       "args": [
         "-Wall",
         "-Wextra",
@@ -203,8 +255,14 @@
     {
       "label": "i386-unknown-linux-gnu",
       "dependsOn": "prepare:linux",
-      "type": "shell",
-      "command": "clang-21",
+      "windows": {
+        "type": "process",
+        "command": "clang",
+      },
+      "linux": {
+        "type": "shell",
+        "command": "clang-20",
+      },
       "args": [
         "-Wall",
         "-Wextra",
@@ -246,8 +304,14 @@
     {
       "label": "x86_64-unknown-linux-gnu",
       "dependsOn": "prepare:linux",
-      "type": "process",
-      "command": "clang",
+      "windows": {
+        "type": "process",
+        "command": "clang",
+      },
+      "linux": {
+        "type": "shell",
+        "command": "clang-20",
+      },
       "args": [
         "-Wall",
         "-Wextra",
@@ -292,8 +356,14 @@
     {
       "label": "aarch64-unknown-linux-gnu",
       "dependsOn": "prepare:linux",
-      "type": "process",
-      "command": "clang",
+      "windows": {
+        "type": "process",
+        "command": "clang",
+      },
+      "linux": {
+        "type": "shell",
+        "command": "clang-20",
+      },
       "args": [
         "-Wall",
         "-Wextra",
@@ -361,13 +431,13 @@
       "problemMatcher": []
     },
     {
-      "label": "extract:windows:arm32",
+      "label": "extract:windows:arm7a",
       "dependsOn": "armv7a-pc-windows-gnu",
       "type": "process",
       "command": "llvm-objcopy",
       "args": [
-        "--dump-section=.text=bin/windows/windows_arm32.bin",
-        "bin/windows/windows_arm32.exe"
+        "--dump-section=.text=bin/windows/windows_arm7a.bin",
+        "bin/windows/windows_arm7a.exe"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -483,8 +553,8 @@
       "problemMatcher": []
     },
     {
-      "label": "dump:windows:arm32",
-      "dependsOn": "extract:windows:arm32",
+      "label": "dump:windows:arm7a",
+      "dependsOn": "extract:windows:arm7a",
       "command": "cmd.exe",
       "args": [
         "/c",
@@ -493,15 +563,15 @@
         "-s",
         "-j",
         ".text",
-        "bin/windows/windows_arm32.exe",
+        "bin/windows/windows_arm7a.exe",
         ">",
-        "bin/windows/windows_arm32.txt",
+        "bin/windows/windows_arm7a.txt",
         "&&",
         "llvm-objdump",
         "-h",
-        "bin/windows/windows_arm32.exe",
+        "bin/windows/windows_arm7a.exe",
         ">>",
-        "bin/windows/windows_arm32.txt"
+        "bin/windows/windows_arm7a.txt"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -618,15 +688,16 @@
       "dependsOn": [
         "dump:windows:i386",
         "dump:windows:x86_64",
-        "dump:windows:arm32",
+        "dump:windows:arm7a",
         "dump:windows:aarch64",
-        // "dump:linux:i386",
-        // "dump:linux:x86_64",
-        // "dump:linux:aarch64",
+        "dump:linux:i386",
+        "dump:linux:x86_64",
+        "dump:linux:aarch64",
       ],
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": true,
+        "name": "Build All Targets"
       }
     }
   ]
