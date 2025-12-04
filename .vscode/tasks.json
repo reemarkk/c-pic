@@ -406,16 +406,16 @@
     {
       "label": "extract:windows:i386",
       "dependsOn": "i386-pc-windows-gnu",
-      "type": "shell",
+      "type": "process",
       "windows": {
         "command": "llvm-objcopy",
       },
       "linux": {
-        "command": "bash",
+        "command": "llvm-objcopy-20",
       },
       "args": [
-        "-c",
-        "llvm-objcopy --dump-section=.text=bin/windows/windows_i386.bin bin/windows/windows_i386.exe"
+        "--dump-section=.text=bin/windows/windows_i386.bin",
+        "bin/windows/windows_i386.exe"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -539,9 +539,9 @@
     {
       "label": "dump:windows:i386",
       "dependsOn": "extract:windows:i386",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "cmd",
+        "command": "cmd.exe",
         "args": [
           "/c",
           "llvm-objdump",
@@ -558,26 +558,13 @@
           "bin/windows/windows_i386.exe",
           ">>",
           "bin/windows/windows_i386.txt"
-        ]
+        ],
       },
       "linux": {
-        "command": "/bin/bash",
+        "command": "bash",
         "args": [
           "-c",
-          "llvm-objdump",
-          "-d",
-          "-s",
-          "-j",
-          ".text",
-          "bin/windows/windows_i386.exe",
-          ">",
-          "bin/windows/windows_i386.txt",
-          "&&",
-          "llvm-objdump",
-          "-h",
-          "bin/windows/windows_i386.exe",
-          ">>",
-          "bin/windows/windows_i386.txt"
+          "llvm-objdump-20 -d -s -j .text bin/windows/windows_i386.exe > bin/windows/windows_i386.txt && llvm-objdump-20 -h bin/windows/windows_i386.exe >> bin/windows/windows_i386.txt"
         ]
       },
       "options": {
@@ -588,24 +575,34 @@
     {
       "label": "dump:windows:x86_64",
       "dependsOn": "extract:windows:x86_64",
-      "command": "cmd.exe",
-      "args": [
-        "/c",
-        "llvm-objdump",
-        "-d",
-        "-s",
-        "-j",
-        ".text",
-        "bin/windows/windows_x86_64.exe",
-        ">",
-        "bin/windows/windows_x86_64.txt",
-        "&&",
-        "llvm-objdump",
-        "-h",
-        "bin/windows/windows_x86_64.exe",
-        ">>",
-        "bin/windows/windows_x86_64.txt"
-      ],
+      "type": "shell",
+      "windows": {
+        "command": "cmd.exe",
+        "args": [
+          "/c",
+          "llvm-objdump",
+          "-d",
+          "-s",
+          "-j",
+          ".text",
+          "bin/windows/windows_x86_64.exe",
+          ">",
+          "bin/windows/windows_x86_64.txt",
+          "&&",
+          "llvm-objdump",
+          "-h",
+          "bin/windows/windows_x86_64.exe",
+          ">>",
+          "bin/windows/windows_x86_64.txt"
+        ],
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objdump-20 -d -s -j .text bin/windows/windows_x86_64.exe > bin/windows/windows_x86_64.txt && llvm-objdump-20 -h bin/windows/windows_x86_64.exe >> bin/windows/windows_x86_64.txt"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -614,24 +611,34 @@
     {
       "label": "dump:windows:arm7a",
       "dependsOn": "extract:windows:arm7a",
-      "command": "cmd.exe",
-      "args": [
-        "/c",
-        "llvm-objdump",
-        "-d",
-        "-s",
-        "-j",
-        ".text",
-        "bin/windows/windows_arm7a.exe",
-        ">",
-        "bin/windows/windows_arm7a.txt",
-        "&&",
-        "llvm-objdump",
-        "-h",
-        "bin/windows/windows_arm7a.exe",
-        ">>",
-        "bin/windows/windows_arm7a.txt"
-      ],
+      "type": "shell",
+      "windows": {
+        "command": "cmd.exe",
+        "args": [
+          "/c",
+          "llvm-objdump",
+          "-d",
+          "-s",
+          "-j",
+          ".text",
+          "bin/windows/windows_arm7a.exe",
+          ">",
+          "bin/windows/windows_arm7a.txt",
+          "&&",
+          "llvm-objdump",
+          "-h",
+          "bin/windows/windows_arm7a.exe",
+          ">>",
+          "bin/windows/windows_arm7a.txt"
+        ],
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objdump-20 -d -s -j .text bin/windows/windows_arm7a.exe > bin/windows/windows_arm7a.txt && llvm-objdump-20 -h bin/windows/windows_arm7a.exe >> bin/windows/windows_arm7a.txt"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -640,24 +647,34 @@
     {
       "label": "dump:windows:aarch64",
       "dependsOn": "extract:windows:aarch64",
-      "command": "cmd.exe",
-      "args": [
-        "/c",
-        "llvm-objdump",
-        "-d",
-        "-s",
-        "-j",
-        ".text",
-        "bin/windows/windows_aarch64.exe",
-        ">",
-        "bin/windows/windows_aarch64.txt",
-        "&&",
-        "llvm-objdump",
-        "-h",
-        "bin/windows/windows_aarch64.exe",
-        ">>",
-        "bin/windows/windows_aarch64.txt"
-      ],
+      "type": "shell",
+      "windows": {
+        "command": "cmd.exe",
+        "args": [
+          "/c",
+          "llvm-objdump",
+          "-d",
+          "-s",
+          "-j",
+          ".text",
+          "bin/windows/windows_aarch64.exe",
+          ">",
+          "bin/windows/windows_aarch64.txt",
+          "&&",
+          "llvm-objdump",
+          "-h",
+          "bin/windows/windows_aarch64.exe",
+          ">>",
+          "bin/windows/windows_aarch64.txt"
+        ],
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objdump-20 -d -s -j .text bin/windows/windows_aarch64.exe > bin/windows/windows_aarch64.txt && llvm-objdump-20 -h bin/windows/windows_aarch64.exe >> bin/windows/windows_aarch64.txt"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -666,24 +683,34 @@
     {
       "label": "dump:linux:i386",
       "dependsOn": "extract:linux:i386",
-      "command": "cmd.exe",
-      "args": [
-        "/c",
-        "llvm-objdump",
-        "-d",
-        "-s",
-        "-j",
-        ".text",
-        "bin/linux/linux_i386.elf",
-        ">",
-        "bin/linux/linux_i386.txt",
-        "&&",
-        "llvm-objdump",
-        "-h",
-        "bin/linux/linux_i386.elf",
-        ">>",
-        "bin/linux/linux_i386.txt"
-      ],
+      "type": "shell",
+      "windows": {
+        "command": "cmd.exe",
+        "args": [
+          "/c",
+          "llvm-objdump",
+          "-d",
+          "-s",
+          "-j",
+          ".text",
+          "bin/linux/linux_i386.elf",
+          ">",
+          "bin/linux/linux_i386.txt",
+          "&&",
+          "llvm-objdump",
+          "-h",
+          "bin/linux/linux_i386.elf",
+          ">>",
+          "bin/linux/linux_i386.txt"
+        ],
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objdump-20 -d -s -j .text bin/linux/linux_i386.elf > bin/linux/linux_i386.txt && llvm-objdump-20 -h bin/linux/linux_i386.elf >> bin/linux/linux_i386.txt"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -692,24 +719,33 @@
     {
       "label": "dump:linux:x86_64",
       "dependsOn": "extract:linux:x86_64",
-      "command": "cmd.exe",
-      "args": [
-        "/c",
-        "llvm-objdump",
-        "-d",
-        "-s",
-        "-j",
-        ".text",
-        "bin/linux/linux_x86_64.elf",
-        ">",
-        "bin/linux/linux_x86_64.txt",
-        "&&",
-        "llvm-objdump",
-        "-h",
-        "bin/linux/linux_x86_64.elf",
-        ">>",
-        "bin/linux/linux_x86_64.txt"
-      ],
+      "type": "shell",
+      "windows": {
+        "args": [
+          "/c",
+          "llvm-objdump",
+          "-d",
+          "-s",
+          "-j",
+          ".text",
+          "bin/linux/linux_x86_64.elf",
+          ">",
+          "bin/linux/linux_x86_64.txt",
+          "&&",
+          "llvm-objdump",
+          "-h",
+          "bin/linux/linux_x86_64.elf",
+          ">>",
+          "bin/linux/linux_x86_64.txt"
+        ],
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objdump-20 -d -s -j .text bin/linux/linux_x86_64.elf > bin/linux/linux_x86_64.txt && llvm-objdump-20 -h bin/linux/linux_x86_64.elf >> bin/linux/linux_x86_64.txt"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -718,24 +754,33 @@
     {
       "label": "dump:linux:aarch64",
       "dependsOn": "extract:linux:aarch64",
-      "command": "cmd.exe",
-      "args": [
-        "/c",
-        "llvm-objdump",
-        "-d",
-        "-s",
-        "-j",
-        ".text",
-        "bin/linux/linux_aarch64.elf",
-        ">",
-        "bin/linux/linux_aarch64.txt",
-        "&&",
-        "llvm-objdump",
-        "-h",
-        "bin/linux/linux_aarch64.elf",
-        ">>",
-        "bin/linux/linux_aarch64.txt"
-      ],
+      "type": "shell",
+      "windows": {
+        "args": [
+          "/c",
+          "llvm-objdump",
+          "-d",
+          "-s",
+          "-j",
+          ".text",
+          "bin/linux/linux_aarch64.elf",
+          ">",
+          "bin/linux/linux_aarch64.txt",
+          "&&",
+          "llvm-objdump",
+          "-h",
+          "bin/linux/linux_aarch64.elf",
+          ">>",
+          "bin/linux/linux_aarch64.txt"
+        ],
+      },
+      "linux": {
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objdump-20 -d -s -j .text bin/linux/linux_aarch64.elf > bin/linux/linux_aarch64.txt && llvm-objdump-20 -h bin/linux/linux_aarch64.elf >> bin/linux/linux_aarch64.txt"
+        ]
+      },
       "options": {
         "cwd": "${workspaceFolder}"
       },
