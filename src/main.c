@@ -1,10 +1,6 @@
 #include "environment.h"
 #include "console.h"
 
-#define MAKE_DOUBLE(name, i)   \
-	INT64 name##INT64 = i##LL; \
-	DOUBLE name = (DOUBLE)name##INT64;
-
 ENTRYPOINT DOUBLE _start(VOID)
 {
 #if defined(PLATFORM_WINDOWS_I386)
@@ -18,10 +14,9 @@ ENTRYPOINT DOUBLE _start(VOID)
 	SetEnvironmentBaseAddress(functionStart); // Set the environment base address to the start of the function
 #endif
 
-	MAKE_DOUBLE(one, 1);
-	MAKE_DOUBLE(two, 2);
+	DOUBLE val = MAKE_DOUBLE(12345.6789);
 
-	PrintFormatedString(UTF8("Example DOUBLE: %f\n"), one / two);
+	PrintFormatedString(UTF8("Example DOUBLE: %f\n"), val);
 
 	ExitProcess(0);
 }

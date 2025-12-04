@@ -29,50 +29,6 @@
       "problemMatcher": []
     },
     {
-      "label": "i386-pc-windows-gnu-pic",
-      "dependsOn": "prepare:windows",
-      "type": "process",
-      "command": "clang",
-      "args": [
-        "-Wall",
-        "-Wextra",
-        "-Werror",
-        "-g",
-        "-Qn",
-        "-fuse-ld=lld",
-        "-nostdinc",
-        "-nostartfiles",
-        "-nodefaultlibs",
-        "-nostdlib",
-        "-fno-ident",
-        "-mno-stack-arg-probe",
-        "-fno-stack-check",
-        "-flto",
-        "-ffunction-sections",
-        "-fdata-sections",
-        "-fno-asynchronous-unwind-tables",
-        "-fno-unwind-tables",
-        "-fno-builtin",
-        "-Wl,/MERGE:.rdata=.text,/Entry:_start,/SUBSYSTEM:CONSOLE,/ORDER:@orderfile.txt,/BASE:0x400000,/FILEALIGN:0x1000,/INCREMENTAL:NO",
-        "-target",
-        "i386-pc-windows-gnu",
-        "-o",
-        "bin/windows/windows_i386.exe",
-        "-DARCHITECTURE_I386",
-        "-DPLATFORM_WINDOWS",
-        "-DPLATFORM_WINDOWS_I386",
-        "-DPLATFORM_PIC",
-        "-O0",
-        "src/*.c"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
-    },
-    {
       "label": "i386-pc-windows-gnu",
       "dependsOn": "prepare:windows",
       "type": "process",
@@ -378,7 +334,7 @@
     },
     {
       "label": "extract:windows:i386",
-      "dependsOn": "i386-pc-windows-gnu-pic",
+      "dependsOn": "i386-pc-windows-gnu",
       "type": "process",
       "command": "llvm-objcopy",
       "args": [
@@ -664,9 +620,9 @@
         "dump:windows:x86_64",
         "dump:windows:arm32",
         "dump:windows:aarch64",
-        "dump:linux:i386",
-        "dump:linux:x86_64",
-        "dump:linux:aarch64",
+        // "dump:linux:i386",
+        // "dump:linux:x86_64",
+        // "dump:linux:aarch64",
       ],
       "group": {
         "kind": "build",

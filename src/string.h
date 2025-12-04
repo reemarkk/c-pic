@@ -15,6 +15,9 @@ BOOL CompareWideStringIgnoreCase(const WCHAR *s1, const WCHAR *s2);
 // Get the length of a null-terminated string
 USIZE GetStringLength(const CHAR *str);
 
+// Convert a string to a double-precision floating-point number
+DOUBLE StringToDouble(const CHAR *s);
+
 INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args);
 
 #endif // __STRING_H__

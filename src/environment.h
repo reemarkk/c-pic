@@ -24,7 +24,7 @@
 
 #define UTF8(literal) ((PCHAR)RebaseLiteral((PVOID)(literal)))
 #define UTF16(literal) ((PWCHAR)RebaseLiteral((PVOID)(literal)))
-
+#define MAKE_DOUBLE(d) StringToDouble(UTF8(#d))
 // Get the caller's return address
 PCHAR GetInstructionAddress(VOID);
 
@@ -32,10 +32,11 @@ PCHAR GetInstructionAddress(VOID);
 PCHAR ReversePatternSearch(PCHAR rip, const CHAR *pattern, UINT32 len);
 
 PVOID RebaseLiteral(PVOID p);
-
+DOUBLE RebaseLiteralDouble(const DOUBLE *d);
 #else // !PIC
 #define UTF8(s) (s)
 #define UTF16(s) (s)
+#define MAKE_DOUBLE(d) d
 #endif // PIC
 
 // -----------------------------------------------------------------------------
@@ -49,6 +50,7 @@ PVOID RebaseLiteral(PVOID p);
 #elif defined(PLATFORM_LINUX)
 #define UTF8(s) (s)
 #define UTF16(s) (s)
+#define MAKE_DOUBLE(d) d
 NO_RETURN VOID ExitProcess(USIZE code);
 
 #endif // PLATFORM_* checks

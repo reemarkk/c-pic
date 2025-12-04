@@ -57,6 +57,52 @@ USIZE GetStringLength(const CHAR *str)
     return s - str;
 }
 
+DOUBLE StringToDouble(const CHAR *s)
+{
+    INT64 zero = 0;
+    INT64 one = 1;
+    INT64 ten = 10;
+
+    DOUBLE sign = (DOUBLE)one;
+    DOUBLE result = (DOUBLE)zero;
+    DOUBLE frac = (DOUBLE)zero;
+    DOUBLE base = (DOUBLE)one;
+    DOUBLE tenDouble = (DOUBLE)ten;
+
+    // sign
+    if (*s == '-')
+    {
+        sign = -(DOUBLE)one;
+        s++;
+    }
+    else if (*s == '+')
+    {
+        s++;
+    }
+
+    // integer part
+    while (*s >= '0' && *s <= '9')
+    {
+        result = result * tenDouble + (*s - '0');
+        s++;
+    }
+
+    // fractional part
+    if (*s == '.')
+    {
+        s++;
+        while (*s >= '0' && *s <= '9')
+        {
+            frac = frac * tenDouble + (*s - '0');
+            base *= tenDouble;
+            s++;
+        }
+        result += frac / base;
+    }
+
+    return result * sign;
+}
+
 // Function to convert an integer to a string with specified formatting - using zero padding, width, and alignment
 VOID intToStr(INT64 num, PCHAR str, PINT32 index, INT32 width, INT32 zeroPad, INT32 leftAlign)
 {
