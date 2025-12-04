@@ -65,12 +65,6 @@
                 "${workspaceFolder}/include"
             ]
         },
-
-        //
-        // ------- WINDOWS PIC (cross targets that still define PLATFORM_WINDOWS_*) -------
-        // IntelliSense-wise these are identical to the classic ones, because preprocessor
-        // defines are the same – only the toolchain/flags differ at build time.
-        //
         {
             "name": "Win-PIC-i386",
             "compilerPath": "C:/Program Files/LLVM/bin/clang.exe",
@@ -135,13 +129,9 @@
                 "${workspaceFolder}/include"
             ]
         },
-
-        //
-        // ------- LINUX PIC (WSL / ELF targets) -------
-        //
         {
             "name": "Linux-Clang-x86_64",
-            "compilerPath": "C:/Program Files/LLVM/bin/clang.exe", // or WSL clang path
+            "compilerPath": "C:/Program Files/LLVM/bin/clang.exe",
             "intelliSenseMode": "linux-clang-x64",
             "cStandard": "c17",
             "cppStandard": "c++17",
