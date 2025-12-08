@@ -8,7 +8,7 @@
             "program": "${workspaceFolder}/bin/windows/windows_i386.exe",
             "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "dump:windows:i386",
+            "preLaunchTask": "extract:windows:i386",
         },
         {
             "name": "Windows x86_64",
@@ -17,7 +17,7 @@
             "program": "${workspaceFolder}/bin/windows/windows_x86_64.exe",
             "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "dump:windows:x86_64"
+            "preLaunchTask": "extract:windows:x86_64"
         },
         {
             "name": "Windows ARM7A",
@@ -26,7 +26,7 @@
             "program": "${workspaceFolder}/bin/windows/windows_arm7a.exe",
             "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "dump:windows:arm7a"
+            "preLaunchTask": "extract:windows:arm7a"
         },
         {
             "name": "Windows AARCH64",
@@ -35,7 +35,7 @@
             "program": "${workspaceFolder}/bin/windows/windows_aarch64.exe",
             "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "dump:windows:aarch64"
+            "preLaunchTask": "extract:windows:aarch64"
         },
         {
             "name": "Linux i386 (WSL)",
@@ -44,7 +44,7 @@
             "program": "${workspaceFolder}/bin/linux/linux_i386.elf",
             "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "dump:linux:i386"
+            "preLaunchTask": "extract:linux:i386"
         },
         {
             "name": "Linux x86_64 (WSL)",
@@ -53,7 +53,7 @@
             "program": "${workspaceFolder}/bin/linux/linux_x86_64.elf",
             "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "dump:linux:x86_64"
+            "preLaunchTask": "extract:linux:x86_64"
         },
         {
             "name": "Linux AARCH64 (WSL)",
@@ -62,7 +62,7 @@
             "program": "${workspaceFolder}/bin/linux/linux_aarch64.elf",
             "cwd": "${workspaceFolder}",
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "dump:linux:aarch64"
+            "preLaunchTask": "extract:linux:aarch64"
         }
     ]
 }

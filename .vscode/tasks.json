@@ -407,17 +407,21 @@
     {
       "label": "extract:windows:i386",
       "dependsOn": "i386-pc-windows-gnu",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "llvm-objcopy",
+        "command": "cmd",
+        "args": [
+          "/c",
+          "llvm-objcopy --dump-section=.text=bin/windows/windows_i386.bin bin/windows/windows_i386.exe && certutil -encodehex -f bin\\windows\\windows_i386.bin bin\\windows\\windows_i386.b64 0x40000001 && llvm-objdump -d -s -j .text bin/windows/windows_i386.exe > bin/windows/windows_i386.txt && llvm-objdump -h bin/windows/windows_i386.exe >> bin/windows/windows_i386.txt"
+        ]
       },
       "linux": {
-        "command": "llvm-objcopy-20",
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objcopy-20 --dump-section=.text=bin/windows/windows_i386.bin bin/windows/windows_i386.exe && base64 bin/windows/windows_i386.bin > bin/windows/windows_i386.b64"
+        ]
       },
-      "args": [
-        "--dump-section=.text=bin/windows/windows_i386.bin",
-        "bin/windows/windows_i386.exe"
-      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -426,17 +430,21 @@
     {
       "label": "extract:windows:x86_64",
       "dependsOn": "x86_64-pc-windows-gnu",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "llvm-objcopy",
+        "command": "cmd",
+        "args": [
+          "/c",
+          "llvm-objcopy --dump-section=.text=bin/windows/windows_x86_64.bin bin/windows/windows_x86_64.exe && certutil -encodehex -f bin\\windows\\windows_x86_64.bin bin\\windows\\windows_x86_64.b64 0x40000001 && llvm-objdump -d -s -j .text bin/windows/windows_x86_64.exe > bin/windows/windows_x86_64.txt && llvm-objdump -h bin/windows/windows_x86_64.exe >> bin/windows/windows_x86_64.txt"
+        ]
       },
       "linux": {
-        "command": "llvm-objcopy-20",
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objcopy-20 --dump-section=.text=bin/windows/windows_x86_64.bin bin/windows/windows_x86_64.exe && base64 bin/windows/windows_x86_64.bin > bin/windows/windows_x86_64.b64"
+        ]
       },
-      "args": [
-        "--dump-section=.text=bin/windows/windows_x86_64.bin",
-        "bin/windows/windows_x86_64.exe"
-      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -445,17 +453,21 @@
     {
       "label": "extract:windows:arm7a",
       "dependsOn": "armv7a-pc-windows-gnu",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "llvm-objcopy",
+        "command": "cmd",
+        "args": [
+          "/c",
+          "llvm-objcopy --dump-section=.text=bin/windows/windows_arm7a.bin bin/windows/windows_arm7a.exe && certutil -encodehex -f bin\\windows\\windows_arm7a.bin bin\\windows\\windows_arm7a.b64 0x40000001 && llvm-objdump -d -s -j .text bin/windows/windows_arm7a.exe > bin/windows/windows_arm7a.txt && llvm-objdump -h bin/windows/windows_arm7a.exe >> bin/windows/windows_arm7a.txt"
+        ]
       },
       "linux": {
-        "command": "llvm-objcopy-20",
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objcopy-20 --dump-section=.text=bin/windows/windows_arm7a.bin bin/windows/windows_arm7a.exe && base64 bin/windows/windows_arm7a.bin > bin/windows/windows_arm7a.b64"
+        ]
       },
-      "args": [
-        "--dump-section=.text=bin/windows/windows_arm7a.bin",
-        "bin/windows/windows_arm7a.exe"
-      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -464,17 +476,21 @@
     {
       "label": "extract:windows:aarch64",
       "dependsOn": "aarch64-pc-windows-gnu",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "llvm-objcopy",
+        "command": "cmd",
+        "args": [
+          "/c",
+          "llvm-objcopy --dump-section=.text=bin/windows/windows_aarch64.bin bin/windows/windows_aarch64.exe && certutil -encodehex -f bin\\windows\\windows_aarch64.bin bin\\windows\\windows_aarch64.b64 0x40000001 && llvm-objdump -d -s -j .text bin/windows/windows_aarch64.exe > bin/windows/windows_aarch64.txt && llvm-objdump -h bin/windows/windows_aarch64.exe >> bin/windows/windows_aarch64.txt"
+        ]
       },
       "linux": {
-        "command": "llvm-objcopy-20",
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objcopy-20 --dump-section=.text=bin/windows/windows_aarch64.bin bin/windows/windows_aarch64.exe && base64 bin/windows/windows_aarch64.bin > bin/windows/windows_aarch64.b64"
+        ]
       },
-      "args": [
-        "--dump-section=.text=bin/windows/windows_aarch64.bin",
-        "bin/windows/windows_aarch64.exe"
-      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -483,36 +499,41 @@
     {
       "label": "extract:linux:i386",
       "dependsOn": "i386-unknown-linux-gnu",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "llvm-objcopy",
+        "command": "cmd",
+        "args": [
+          "/c",
+          "llvm-objcopy --dump-section=.text=bin/linux/linux_i386.bin bin/linux/linux_i386.elf && certutil -encodehex -f bin\\linux\\linux_i386.bin bin\\linux\\linux_i386.b64 0x40000001 && llvm-objdump -d -s -j .text bin/linux/linux_i386.elf > bin/linux/linux_i386.txt && llvm-objdump -h bin/linux/linux_i386.elf >> bin/linux/linux_i386.txt"
+        ]
       },
       "linux": {
-        "command": "llvm-objcopy-20",
-      },
-      "args": [
-        "--dump-section=.text=bin/linux/linux_i386.bin",
-        "bin/linux/linux_i386.elf"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objcopy-20 --dump-section=.text=bin/linux/linux_i386.bin bin/linux/linux_i386.elf && base64 bin/linux/linux_i386.bin > bin/linux/linux_i386.b64"
+        ]
       },
       "problemMatcher": []
     },
     {
       "label": "extract:linux:x86_64",
       "dependsOn": "x86_64-unknown-linux-gnu",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "llvm-objcopy",
+        "command": "cmd",
+        "args": [
+          "/c",
+          "llvm-objcopy --dump-section=.text=bin/linux/linux_x86_64.bin bin/linux/linux_x86_64.elf && certutil -encodehex -f bin\\linux\\linux_x86_64.bin bin\\linux\\linux_x86_64.b64 0x40000001 && llvm-objdump -d -s -j .text bin/linux/linux_x86_64.elf > bin/linux/linux_x86_64.txt && llvm-objdump -h bin/linux/linux_x86_64.elf >> bin/linux/linux_x86_64.txt"
+        ]
       },
       "linux": {
-        "command": "llvm-objcopy-20",
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objcopy-20 --dump-section=.text=bin/linux/linux_x86_64.bin bin/linux/linux_x86_64.elf && base64 bin/linux/linux_x86_64.bin > bin/linux/linux_x86_64.b64"
+        ]
       },
-      "args": [
-        "--dump-section=.text=bin/linux/linux_x86_64.bin",
-        "bin/linux/linux_x86_64.elf"
-      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -521,17 +542,21 @@
     {
       "label": "extract:linux:aarch64",
       "dependsOn": "aarch64-unknown-linux-gnu",
-      "type": "process",
+      "type": "shell",
       "windows": {
-        "command": "llvm-objcopy",
+        "command": "cmd",
+        "args": [
+          "/c",
+          "llvm-objcopy --dump-section=.text=bin/linux/linux_aarch64.bin bin/linux/linux_aarch64.elf && certutil -encodehex -f bin\\linux\\linux_aarch64.bin bin\\linux\\linux_aarch64.b64 0x40000001 && llvm-objdump -d -s -j .text bin/linux/linux_aarch64.elf > bin/linux/linux_aarch64.txt && llvm-objdump -h bin/linux/linux_aarch64.elf >> bin/linux/linux_aarch64.txt"
+        ]
       },
       "linux": {
-        "command": "llvm-objcopy-20",
+        "command": "bash",
+        "args": [
+          "-c",
+          "llvm-objcopy-20 --dump-section=.text=bin/linux/linux_aarch64.bin bin/linux/linux_aarch64.elf && base64 bin/linux/linux_aarch64.bin > bin/linux/linux_aarch64.b64"
+        ]
       },
-      "args": [
-        "--dump-section=.text=bin/linux/linux_aarch64.bin",
-        "bin/linux/linux_aarch64.elf"
-      ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -700,13 +725,13 @@
       "label": "Build All",
       "dependsOrder": "parallel",
       "dependsOn": [
-        "dump:windows:i386",
-        "dump:windows:x86_64",
-        "dump:windows:arm7a",
-        "dump:windows:aarch64",
-        "dump:linux:i386",
-        "dump:linux:x86_64",
-        "dump:linux:aarch64",
+        "extract:windows:i386",
+        "extract:windows:x86_64",
+        "extract:windows:arm7a",
+        "extract:windows:aarch64",
+        "extract:linux:i386",
+        "extract:linux:x86_64",
+        "extract:linux:aarch64",
       ],
       "group": {
         "kind": "build",
