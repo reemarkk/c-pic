@@ -3,6 +3,10 @@
 
 #include "primitives.h"
 
+// Create a DOUBLE value from integer and fractional parts
+DOUBLE MakeDouble(INT32 intPart, INT32 fracPart);
+#define MAKE_DOUBLE(intPart, fracPart) (MakeDouble((intPart), (fracPart)))
+
 #if defined(PLATFORM_WINDOWS)
 
 #include "peb.h"
@@ -24,7 +28,7 @@
 
 #define UTF8(literal) ((PCHAR)RebaseLiteral((PVOID)(literal)))
 #define UTF16(literal) ((PWCHAR)RebaseLiteral((PVOID)(literal)))
-#define MAKE_DOUBLE(d) StringToDouble(UTF8(#d))
+
 // Get the caller's return address
 PCHAR GetInstructionAddress(VOID);
 
@@ -35,7 +39,6 @@ PVOID RebaseLiteral(PVOID p);
 #else // !PIC
 #define UTF8(s) (s)
 #define UTF16(s) (s)
-#define MAKE_DOUBLE(d) d
 #endif // PIC
 
 // -----------------------------------------------------------------------------
@@ -49,11 +52,6 @@ PVOID RebaseLiteral(PVOID p);
 #elif defined(PLATFORM_LINUX)
 #define UTF8(s) (s)
 #define UTF16(s) (s)
-#if defined(PLATFORM_LINUX_X86_64)
-#define MAKE_DOUBLE(d) StringToDouble(#d)
-#else
-#define MAKE_DOUBLE(d) d
-#endif
 NO_RETURN VOID ExitProcess(USIZE code);
 
 #endif // PLATFORM_* checks

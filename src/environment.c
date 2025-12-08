@@ -1,5 +1,34 @@
 #include "environment.h"
 
+DOUBLE MakeDouble(INT32 intPart, INT32 fracPart)
+{
+    // Step 1: Count digits in fracPart
+    INT32 x = fracPart;
+    INT32 digits = 0;
+    while (x > 0) { x /= 10; digits++; }
+
+    // Step 2: Extract most significant digit
+    INT32 pow10 = 1;
+    for (INT32 i = 1; i < digits; i++)
+        pow10 *= 10;
+
+    INT32 firstDigit = fracPart / pow10;
+
+    // Step 3: Trim first digit if it is '1' and there are more digits
+    if (firstDigit == 1 && digits > 1) {
+        fracPart %= pow10;   // remove MSB
+        digits--;
+    }
+
+    // Step 4: Compute denominator correctly
+    DOUBLE denom = 1.0;
+    for (INT32 i = 0; i < digits; i++)
+        denom *= 10.0;
+
+    return (DOUBLE)intPart + (DOUBLE)fracPart / denom;
+}
+
+
 #if defined(PLATFORM_WINDOWS_I386)
 
 PCHAR GetInstructionAddress(VOID)
