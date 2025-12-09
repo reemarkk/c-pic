@@ -183,14 +183,11 @@ VOID intToStr(INT64 num, PCHAR str, PINT32 index, INT32 width, INT32 zeroPad, IN
 }
 
 // Function to convert a double to a string with specified formatting - using precision, width, and zero padding
-VOID doubleToStr(DOUBLE num, PCHAR str, PINT32 index, INT32 precision, INT32 width, INT32 zeroPad)
+VOID doubleToStr(DOUBLE num, PCHAR str, PINT32 index, INT32 precision, INT32 width, INT32 zeroPad, INT32 leftAlign) 
 {
-    BOOL isNegative = FALSE; // Flag to check if the number is negative
-
     // Setting negative flag and handling negative numbers
     if (num < 0)
     {
-        isNegative = TRUE;
         str[(*index)++] = '-'; // Add negative sign to the string
         num = -num;            // Make the number positive for further processing
     }
@@ -224,7 +221,7 @@ VOID doubleToStr(DOUBLE num, PCHAR str, PINT32 index, INT32 precision, INT32 wid
         intStr[i] = intStr[intIndex - 1 - i];
         intStr[intIndex - 1 - i] = tmp;
     }
-
+    
     // Add integer part to the result string
     for (INT32 i = 0; i < intIndex; ++i)
     {
@@ -285,30 +282,45 @@ VOID doubleToStr(DOUBLE num, PCHAR str, PINT32 index, INT32 precision, INT32 wid
         }
     }
 
-    // Calculate the total length: integer part + decimal point + precision
-    INT32 totalLength = *index - (*index - 1) + precision + (isNegative ? 1 : 0);
-    INT32 padding = width - totalLength; // Calculate padding needed to reach the specified width
+   INT32 intLen = *index; // Number of chars written so far (integer part + sign)
+   INT32 fracLen = (precision > 0) ? (1 + precision) : 0; // 1 for '.', precision for digits
+   INT32 totalLength = intLen + fracLen;
+   INT32 padding = width - totalLength; // Calculate padding needed to reach the specified width
 
-    // Apply padding if needed
-    if (zeroPad)
-    {
-        for (INT32 i = 0; i < padding; i++)
-        {
-            str[(*index)++] = '0'; // Add zero padding if specified
-        }
-    }
-    else
-    {
-        for (INT32 i = 0; i < padding; i++)
-        { // Add spaces for padding if zero padding is not specified
-            str[(*index)++] = ' ';
-        }
+   // If padding is needed, shift the number right and pad at the front
+   if (padding > 0) {
+       if (zeroPad) {
+           // Shift the number right by padding, fill with zeros (after sign if negative)
+           INT32 signOffset = (str[0] == '-') ? 1 : 0;
+           for (INT32 i = *index - 1; i >= signOffset; --i) {
+               str[i + padding] = str[i];
+           }
+           for (INT32 i = signOffset; i < signOffset + padding; ++i) {
+               str[i] = '0';
+            }
+           *index += padding;
+       } else if (leftAlign){
+           // Shift the number right by padding, fill with spaces (before sign if negative)
+           for (INT32 i = 0; i < padding; ++i) {
+               str[(*index)++] = ' ';
+           }
+       }
+	else {
+		// Shift the number right by padding, fill with spaces (before sign if negative)
+		INT32 signOffset = (str[0] == '-') ? 1 : 0;
+		for (INT32 i = *index - 1; i >= signOffset; --i) {
+			str[i + padding] = str[i];
+		}
+		for (INT32 i = 0; i < padding; ++i) {
+			str[i] = ' ';
+		}
+		*index += padding;
+	}
     }
 
     // Null-terminate the string
     str[(*index)] = '\0';
 }
-
 // Function to convert wide string to narrow string
 VOID wideToStr(PWCHAR wstr, PCHAR str, PINT32 index, INT32 width)
 {
@@ -538,7 +550,6 @@ VOID formatHex(UINT32 num, INT32 fieldWidth, INT32 uppercase, PCHAR s, INT32 *j,
 // Custom vsprintf function implementation
 INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
 {
-
     INT32 i = 0, j = 0;  // Index for the format string and output string
     INT32 precision = 6; // Default precision for floating-point numbers
 
@@ -547,7 +558,6 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
     {
         return 0;
     }
-
     // Loop through the format string to process each character
     while (format[i] != '\0')
     {
@@ -556,29 +566,10 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
             i++;           // Skip '%'
             precision = 6; // Reset default precision
 
-            // Handle precision for floating-point numbers (e.g. "%.3f")
-            if (format[i] == '.')
-            {
-                i++;           // Skip '.'
-                precision = 0; // Reset precision to 0 before parsing
-                while (format[i] >= '0' && format[i] <= '9')
-                {                                                   // Parse precision value
-                    precision = precision * 10 + (format[i] - '0'); // Convert character to integer
-                    i++;                                            // Move to the next character
-                }
-            }
-
             INT32 addPrefix = 0; // Flag for adding '0x' prefix to hex numbers
-            if (format[i] == '#')
-            {
-                addPrefix = 1; // Set flag to add prefix
-                i++;           // Skip '#'
-            }
-            // Check for an optional zero flag and field width
             INT32 leftAlign = 0;
             INT32 zeroPad = 0;
             INT32 fieldWidth = 0;
-
             // Check for optional flags: '-' for left align, '0' for zero padding
             while (format[i] == '-' || format[i] == '0')
             {
@@ -593,11 +584,26 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
                 }
                 i++;
             }
-
             // Parse any numeric field width
             while (format[i] >= '0' && format[i] <= '9')
             {
                 fieldWidth = fieldWidth * 10 + (format[i] - '0');
+                i++;
+            }
+
+            // Handle precision for floating-point numbers
+            if (format[i] == '.') {
+                i++;  // Skip '.'
+                precision = 0; // Reset precision to 0 before parsing
+                while (format[i] >= '0' && format[i] <= '9') { // Parse precision value
+                    precision = precision * 10 + (format[i] - '0'); // Convert character to integer
+                    i++; // Move to the next character
+                }
+            }
+
+            // Handle '#' flag after width/precision (optional, for hex)
+            if (format[i] == '#') {
+                addPrefix = 1;
                 i++;
             }
 
@@ -730,10 +736,10 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
                 }
                 // Handle other long variants (lf, ld, lu, lld)
                 else if (TO_LOWER_CASE(format[i + 1]) == 'f')
-                {                                                            // long double (%lf)
-                    i += 2;                                                  // Skip over "lf"
-                    long double num = VA_ARG(args, long double);             // Get the next argument as a long double
-                    doubleToStr(num, s, &j, precision, fieldWidth, zeroPad); // Convert the long double to string with specified formatting
+                {                                                                       // long double (%lf)
+                    i += 2;                                                             // Skip over "lf"
+                    long double num = VA_ARG(args, long double);                        // Get the next argument as a long double
+                    doubleToStr(num, s, &j, precision, fieldWidth, zeroPad, leftAlign); // Convert the long double to string with specified formatting
                     continue;
                 }
                 else if (TO_LOWER_CASE(format[i + 1]) == 'd')
@@ -771,10 +777,10 @@ INT32 String_FormatV(PCHAR s, const CHAR *format, VA_LIST args)
                 }
             }
             else if (TO_LOWER_CASE(format[i]) == 'f')
-            {                                                            // Handle %f (double)
-                i++;                                                     // Skip 'f'
-                DOUBLE num = VA_ARG(args, DOUBLE);                       // Get the next argument as a DOUBLE
-                doubleToStr(num, s, &j, precision, fieldWidth, zeroPad); // Convert the double to string with specified formatting
+            {                                                                       // Handle %f (double)
+                i++;                                                                // Skip 'f'
+                DOUBLE num = VA_ARG(args, DOUBLE);                                  // Get the next argument as a DOUBLE
+                doubleToStr(num, s, &j, precision, fieldWidth, zeroPad, leftAlign); // Convert the double to string with specified formatting
                 continue;
             }
             else if (TO_LOWER_CASE(format[i]) == '%')
